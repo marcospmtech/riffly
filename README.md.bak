@@ -1,0 +1,38 @@
+# Riffly: Your Music Hub
+
+Crie um site com as informações abaixo. Ele deve ser responsivo para celulares, tablete e PC. Use a paleta e logo que anexei. Adicionei também algumas fotos com exemplos de tela (use como exemplo, não copie igual)
+
+Nome: Riffly
+Descrição: site unificado de afinador, metrônomo e biblioteca de cifras.
+O que eu quero: área de administrador, metrônomo, cifras, afinador, sistema de login (user e adm), sistema de músicas favoritas e recentes.
+
+Páginas
+Home: Mostrará as opções do app (metronomo, afinador cromático e afinador manual) e as músicas recentes e favoritadas (caso tenha)
+Metrono: metrono totalmente configurável, com botão de start e stop, opção para configurar subdivisão do tempo, quantos "cliques" vão aparecer antes de recomeçar, BPM e etc. Deixe o BPM padrão como 60, mas vá de 40 a 220 em uma rolagem
+Afinador cromático: afinador com uma linha vertical fixa em baixo que se move apartir desse ponto fixo para a direita e esquerda. Mostre a nota em cima e em baixo uma lista com todas as notas
+Afinador manual: opção para escolher todas as afinações disponívels (apenas guitarra e violão por enquanto) e escolher corda por corda qual afinar.
+Cifras: mostrará uma imagem da cifra e em um outro card mostrará um player do youtube, terá as informações do BPM da música e tipo de afinação com 2 botões. O botão do metrônomo leva para a página do metrônomo com o BPM já pré-configurado (se a música tiver 120 de BPM vai ser 120 de BPM já pré-configurado), já o botão da afinação vai levar para o afinador manual com a afinação já pre-setada.
+Painel dono: crie um painel com todos os usuários que somente uma conta vai ter, já crie essa conta (e-mail: mmonea6549@gmail.com, senha: Genebra@6549). Nesse painel conta que você criar como dona do servidor (com as informações que te passei de e-mail e senha) deverá poder criar conta de administrador, redefinir senhas e excluir 
+contas.
+Painel administrador: adicionar, editar e excluir novas músicas (deverá ter como colocar nome da música, autor, albúm, BPM, afinação e uma foto da cifra)
+
+This project was built with [Lovable](https://lovable.dev).
+
+## Build with Lovable
+
+Continue developing this project in the [Lovable editor](https://lovable.dev/projects/2106b1f6-8d89-4781-9f9a-5ac5258827be).
+
+- **Ship faster**: describe what you want to build and Lovable handles the code.
+- **Stay in sync**: every change made in Lovable is committed straight to this repository.
+- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
+
+## Development
+
+Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
+
+```sh
+git clone <this-repository-url>
+cd <repository-name>
+npm i
+npm run dev
+```

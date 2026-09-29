@@ -1,0 +1,2 @@
+CREATE POLICY "Allow public read on chord-images" ON storage.objects FOR SELECT TO anon, authenticated USING (bucket_id = 'chord-images');
+CREATE POLICY "Allow service role full access on chord-images" ON storage.objects FOR ALL TO service_role USING (bucket_id = 'chord-images') WITH CHECK (bucket_id = 'chord-images');

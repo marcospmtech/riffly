@@ -1,0 +1,151 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-ring-offset-background: var(--background);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  /* Riffly brand tokens */
+  --color-riffly-purple: var(--riffly-purple);
+  --color-riffly-purple-dark: var(--riffly-purple-dark);
+  --color-riffly-yellow: var(--riffly-yellow);
+  --color-riffly-in-tune: var(--riffly-in-tune);
+  --color-riffly-out-of-tune: var(--riffly-out-of-tune);
+}
+
+:root {
+  --radius: 0.75rem;
+
+  /* Riffly palette */
+  --riffly-purple: oklch(0.4209 0.3598 296.33);
+  --riffly-purple-dark: oklch(0.3216 0.3118 295.38);
+  --riffly-yellow: oklch(0.8432 0.3312 33.86);
+  --riffly-in-tune: oklch(0.7604 0.5506 163.29);
+  --riffly-out-of-tune: oklch(0.5348 0.9129 359.96);
+
+  --background: oklch(0.1541 0.0422 304.09);
+  --foreground: oklch(0.984 0.003 247.858);
+  --card: oklch(0.2064 0.0520 319.57);
+  --card-foreground: oklch(0.984 0.003 247.858);
+  --popover: oklch(0.2064 0.0520 319.57);
+  --popover-foreground: oklch(0.984 0.003 247.858);
+  --primary: var(--riffly-yellow);
+  --primary-foreground: oklch(0.129 0.042 264.695);
+  --secondary: oklch(0.2764 0.0691 311.67);
+  --secondary-foreground: oklch(0.984 0.003 247.858);
+  --muted: oklch(0.2764 0.0691 311.67);
+  --muted-foreground: oklch(0.7132 0.0614 331.40);
+  --accent: var(--riffly-purple);
+  --accent-foreground: oklch(0.984 0.003 247.858);
+  --destructive: var(--riffly-out-of-tune);
+  --destructive-foreground: oklch(0.984 0.003 247.858);
+  --border: oklch(0.2764 0.0691 311.67);
+  --input: oklch(0.2764 0.0691 311.67);
+  --ring: var(--riffly-yellow);
+  --chart-1: var(--riffly-purple);
+  --chart-2: var(--riffly-yellow);
+  --chart-3: var(--riffly-in-tune);
+  --chart-4: var(--riffly-out-of-tune);
+  --chart-5: oklch(0.7132 0.0614 331.40);
+  --sidebar: oklch(0.2064 0.0520 319.57);
+  --sidebar-foreground: oklch(0.984 0.003 247.858);
+  --sidebar-primary: var(--riffly-purple);
+  --sidebar-primary-foreground: oklch(0.984 0.003 247.858);
+  --sidebar-accent: oklch(0.2764 0.0691 311.67);
+  --sidebar-accent-foreground: oklch(0.984 0.003 247.858);
+  --sidebar-border: oklch(0.2764 0.0691 311.67);
+  --sidebar-ring: var(--riffly-yellow);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+  }
+}
+
+/* Riffly utility helpers */
+@layer utilities {
+  .text-riffly-secondary {
+    color: var(--color-muted-foreground);
+  }
+
+  .bg-riffly-purple {
+    background-color: var(--color-riffly-purple);
+  }
+
+  .bg-riffly-purple-dark {
+    background-color: var(--color-riffly-purple-dark);
+  }
+
+  .bg-riffly-card {
+    background-color: var(--color-card);
+  }
+
+  .border-riffly {
+    border-color: var(--color-border);
+  }
+
+  .shadow-riffly {
+    box-shadow: 0 10px 30px -10px color-mix(in oklab, var(--color-riffly-purple) 25%, transparent);
+  }
+
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: var(--color-border);
+    border-radius: 9999px;
+  }
+}
