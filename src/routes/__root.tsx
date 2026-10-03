@@ -13,6 +13,7 @@ import { Menu, Search, X } from "lucide-react";
 
 import appCss from "../styles.css?url";
 import { AuthProvider, useAuth } from "@/hooks/use-auth";
+import { useRole } from "@/hooks/use-role";
 import { supabase } from "@/integrations/supabase/client";
 import logoUrl from "@/assets/riffly-logo.png";
 
@@ -132,6 +133,9 @@ function RootComponent() {
 
 function Header() {
   const { user, isLoading } = useAuth();
+  const role = useRole();
+  const isAdminOrOwner = role === "admin" || role === "owner";
+  const isOwner = role === "owner";
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
 
@@ -167,23 +171,23 @@ function Header() {
               {link.label}
             </Link>
           ))}
-          {!isLoading && user && (
-            <>
-              <Link
-                to="/admin"
-                className="rounded-md px-3 py-2 text-sm font-medium text-white/90 transition-colors hover:bg-white/10 hover:text-white"
-                activeProps={{ className: "bg-white/15 text-white" }}
-              >
-                Admin
-              </Link>
-              <Link
-                to="/dono"
-                className="rounded-md px-3 py-2 text-sm font-medium text-white/90 transition-colors hover:bg-white/10 hover:text-white"
-                activeProps={{ className: "bg-white/15 text-white" }}
-              >
-                Dono
-              </Link>
-            </>
+          {!isLoading && user && isAdminOrOwner && (
+            <Link
+              to="/admin"
+              className="rounded-md px-3 py-2 text-sm font-medium text-white/90 transition-colors hover:bg-white/10 hover:text-white"
+              activeProps={{ className: "bg-white/15 text-white" }}
+            >
+              Admin
+            </Link>
+          )}
+          {!isLoading && user && isOwner && (
+            <Link
+              to="/dono"
+              className="rounded-md px-3 py-2 text-sm font-medium text-white/90 transition-colors hover:bg-white/10 hover:text-white"
+              activeProps={{ className: "bg-white/15 text-white" }}
+            >
+              Dono
+            </Link>
           )}
         </nav>
 
@@ -230,25 +234,25 @@ function Header() {
                 {link.label}
               </Link>
             ))}
-            {!isLoading && user && (
-              <>
-                <Link
-                  to="/admin"
-                  className="rounded-md px-3 py-2 text-base font-medium text-white/90 hover:bg-white/10"
-                  activeProps={{ className: "bg-white/15 text-white" }}
-                  onClick={() => setMobileOpen(false)}
-                >
-                  Admin
-                </Link>
-                <Link
-                  to="/dono"
-                  className="rounded-md px-3 py-2 text-base font-medium text-white/90 hover:bg-white/10"
-                  activeProps={{ className: "bg-white/15 text-white" }}
-                  onClick={() => setMobileOpen(false)}
-                >
-                  Dono
-                </Link>
-              </>
+            {!isLoading && user && isAdminOrOwner && (
+              <Link
+                to="/admin"
+                className="rounded-md px-3 py-2 text-base font-medium text-white/90 hover:bg-white/10"
+                activeProps={{ className: "bg-white/15 text-white" }}
+                onClick={() => setMobileOpen(false)}
+              >
+                Admin
+              </Link>
+            )}
+            {!isLoading && user && isOwner && (
+              <Link
+                to="/dono"
+                className="rounded-md px-3 py-2 text-base font-medium text-white/90 hover:bg-white/10"
+                activeProps={{ className: "bg-white/15 text-white" }}
+                onClick={() => setMobileOpen(false)}
+              >
+                Dono
+              </Link>
             )}
             <div className="mt-2 border-t border-white/10 pt-2">
               <AuthButton onClick={() => setMobileOpen(false)} />
