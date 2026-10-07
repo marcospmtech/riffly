@@ -5,7 +5,7 @@ import { Heart, Metronome, Guitar, ArrowLeft } from "lucide-react";
 import { getSong } from "@/lib/songs.functions";
 import { addFavorite, removeFavorite, addRecent, listFavorites } from "@/lib/favorites.functions";
 import { useAuth } from "@/hooks/use-auth";
-import { getSongImage } from "@/components/song-card";
+import { getSongImage, getSongChordPaths } from "@/components/song-card";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/cifras/$id")({
@@ -70,7 +70,9 @@ function CifraDetailPage() {
   });
 
   const ytId = getYouTubeId(song.youtube_url);
-  const img = getSongImage(song.image_path);
+  const chordImages = getSongChordPaths(song)
+    .map((p) => getSongImage(p))
+    .filter((u): u is string => !!u);
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
@@ -112,8 +114,18 @@ function CifraDetailPage() {
       <div className="grid gap-6 lg:grid-cols-2">
         <div className="rounded-2xl border border-border bg-card p-4">
           <h2 className="mb-3 text-sm font-semibold text-muted-foreground">Cifra</h2>
-          {img ? (
-            <img src={img} alt={`Cifra de ${song.title}`} className="w-full rounded-lg" />
+          {chordImages.length > 0 ? (
+            <div className="flex flex-col gap-3">
+              {chordImages.map((src, i) => (
+                <img
+                  key={`${src}-${i}`}
+                  src={src}
+                  alt={`Cifra de ${song.title}${chordImages.length > 1 ? ` (parte ${i + 1})` : ""}`}
+                  className="w-full rounded-lg"
+                  loading={i === 0 ? "eager" : "lazy"}
+                />
+              ))}
+            </div>
           ) : (
             <div className="flex h-64 items-center justify-center rounded-lg bg-background text-muted-foreground">
               Sem imagem da cifra

@@ -135,6 +135,7 @@ export type Database = {
           created_at: string
           id: string
           image_path: string | null
+          image_paths: string[]
           spotify_url: string | null
           title: string
           tuning: string
@@ -149,6 +150,7 @@ export type Database = {
           created_at?: string
           id?: string
           image_path?: string | null
+          image_paths?: string[]
           spotify_url?: string | null
           title: string
           tuning?: string
@@ -163,6 +165,7 @@ export type Database = {
           created_at?: string
           id?: string
           image_path?: string | null
+          image_paths?: string[]
           spotify_url?: string | null
           title?: string
           tuning?: string

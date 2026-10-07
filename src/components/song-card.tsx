@@ -11,6 +11,7 @@ export interface Song {
   youtube_url: string | null;
   spotify_url?: string | null;
   image_path: string | null;
+  image_paths?: string[] | null;
   cover_path?: string | null;
   created_at: string;
   updated_at: string;
@@ -20,6 +21,15 @@ export function getSongImage(imagePath: string | null | undefined): string | und
   if (!imagePath) return undefined;
   if (imagePath.startsWith("http")) return imagePath;
   return `/api/img?path=${encodeURIComponent(imagePath)}`;
+}
+
+/** Lista de caminhos das cifras na ordem de cadastro (com fallback para o campo antigo `image_path`). */
+export function getSongChordPaths(song: {
+  image_path?: string | null;
+  image_paths?: string[] | null;
+}): string[] {
+  if (song.image_paths && song.image_paths.length > 0) return song.image_paths;
+  return song.image_path ? [song.image_path] : [];
 }
 
 export function SongCard({ song, favorite }: { song: Song; favorite?: boolean }) {

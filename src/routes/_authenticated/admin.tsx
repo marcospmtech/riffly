@@ -1,11 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Plus, Edit, Trash2, X, Music2 } from "lucide-react";
+import { Plus, Edit, Trash2, X, Music2, ArrowUp, ArrowDown } from "lucide-react";
 import { listSongs, createSong, updateSong, deleteSong } from "@/lib/songs.functions";
 import { uploadChordImage } from "@/lib/upload.functions";
 import { listSongRequests, deleteSongRequest } from "@/lib/song-requests.functions";
-import { getSongImage } from "@/components/song-card";
+import { getSongImage, getSongChordPaths } from "@/components/song-card";
 import { TUNINGS, tuningNotes } from "@/routes/afinador-manual";
 import { useRole } from "@/hooks/use-role";
 import { toast } from "sonner";
@@ -29,7 +29,7 @@ interface SongForm {
   bpm: number;
   tuning: string;
   youtube_url: string;
-  image_path: string;
+  image_paths: string[];
   cover_path: string;
 }
 
@@ -40,7 +40,7 @@ const emptyForm: SongForm = {
   bpm: 120,
   tuning: "E A D G B E",
   youtube_url: "",
-  image_path: "",
+  image_paths: [],
   cover_path: "",
 };
 
@@ -68,7 +68,7 @@ function AdminPage() {
         bpm: Number(f.bpm),
         tuning: f.tuning,
         youtube_url: f.youtube_url || null,
-        image_path: f.image_path || null,
+        image_paths: f.image_paths,
         cover_path: f.cover_path || null,
       };
       const saved = f.id
@@ -221,7 +221,7 @@ function AdminPage() {
                               bpm: s.bpm,
                               tuning: s.tuning,
                               youtube_url: s.youtube_url ?? "",
-                              image_path: s.image_path ?? "",
+                              image_paths: getSongChordPaths(s),
                               cover_path: s.cover_path ?? "",
                             })
                           }
@@ -280,18 +280,23 @@ function SongFormDialog({
   const [form, setForm] = useState<SongForm>(initial);
   const [uploading, setUploading] = useState<"cifras" | "capas" | null>(null);
 
-  const handleFile = async (file: File, folder: "cifras" | "capas") => {
-    setUploading(folder);
+  const uploadOne = async (file: File, folder: "cifras" | "capas") => {
+    const buffer = await file.arrayBuffer();
+    const bytes = new Uint8Array(buffer);
+    let binary = "";
+    for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]!);
+    const b64 = btoa(binary);
+    const { path } = await uploadChordImage({
+      data: { filename: file.name, content_type: file.type || "image/png", data_base64: b64, folder },
+    });
+    return path;
+  };
+
+  const handleCover = async (file: File) => {
+    setUploading("capas");
     try {
-      const buffer = await file.arrayBuffer();
-      const bytes = new Uint8Array(buffer);
-      let binary = "";
-      for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]!);
-      const b64 = btoa(binary);
-      const { path } = await uploadChordImage({
-        data: { filename: file.name, content_type: file.type || "image/png", data_base64: b64, folder },
-      });
-      setForm((f) => (folder === "capas" ? { ...f, cover_path: path } : { ...f, image_path: path }));
+      const path = await uploadOne(file, "capas");
+      setForm((f) => ({ ...f, cover_path: path }));
       toast.success("Imagem enviada");
     } catch (e: any) {
       toast.error(e?.message ?? "Erro no upload");
@@ -300,7 +305,36 @@ function SongFormDialog({
     }
   };
 
-  const chordImg = getSongImage(form.image_path || null);
+  // Envia as cifras uma a uma, na ordem em que foram selecionadas, e adiciona ao final da lista.
+  const handleChords = async (files: File[]) => {
+    setUploading("cifras");
+    let ok = 0;
+    try {
+      for (const file of files) {
+        const path = await uploadOne(file, "cifras");
+        setForm((f) => ({ ...f, image_paths: [...f.image_paths, path] }));
+        ok++;
+      }
+      toast.success(ok === 1 ? "Imagem enviada" : `${ok} imagens enviadas`);
+    } catch (e: any) {
+      toast.error(e?.message ?? "Erro no upload");
+    } finally {
+      setUploading(null);
+    }
+  };
+
+  const removeChord = (index: number) =>
+    setForm((f) => ({ ...f, image_paths: f.image_paths.filter((_, i) => i !== index) }));
+
+  const moveChord = (index: number, dir: -1 | 1) =>
+    setForm((f) => {
+      const target = index + dir;
+      if (target < 0 || target >= f.image_paths.length) return f;
+      const next = [...f.image_paths];
+      [next[index], next[target]] = [next[target]!, next[index]!];
+      return { ...f, image_paths: next };
+    });
+
   const coverImg = getSongImage(form.cover_path || null);
 
   return (
@@ -358,7 +392,7 @@ function SongFormDialog({
               disabled={uploading !== null}
               onChange={(e) => {
                 const f = e.target.files?.[0];
-                if (f) void handleFile(f, "capas");
+                if (f) void handleCover(f);
               }}
               className="w-full text-sm text-muted-foreground file:mr-3 file:rounded-lg file:border-0 file:bg-riffly-purple file:px-3 file:py-1.5 file:text-white"
             />
@@ -366,15 +400,67 @@ function SongFormDialog({
           </div>
 
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-foreground">Imagem da cifra</label>
-            {chordImg && <img src={chordImg} alt="Cifra" className="mb-2 max-h-40 rounded-lg" />}
+            <label className="mb-1.5 block text-sm font-medium text-foreground">
+              Imagens da cifra ({form.image_paths.length})
+            </label>
+            <p className="mb-2 text-xs text-muted-foreground">
+              Podem ser várias. Elas aparecem na página da música uma abaixo da outra, na ordem abaixo.
+            </p>
+            {form.image_paths.length > 0 && (
+              <ul className="mb-2 space-y-2">
+                {form.image_paths.map((p, i) => {
+                  const src = getSongImage(p);
+                  return (
+                    <li
+                      key={`${p}-${i}`}
+                      className="flex items-center gap-3 rounded-lg border border-border bg-background p-2"
+                    >
+                      <span className="w-5 shrink-0 text-center text-xs font-semibold text-muted-foreground">
+                        {i + 1}
+                      </span>
+                      {src && <img src={src} alt={`Cifra ${i + 1}`} className="h-16 w-24 rounded object-cover object-top" />}
+                      <div className="ml-auto flex gap-1">
+                        <button
+                          type="button"
+                          onClick={() => moveChord(i, -1)}
+                          disabled={i === 0}
+                          className="rounded-lg border border-border p-1.5 hover:border-primary disabled:opacity-30"
+                          aria-label="Mover para cima"
+                        >
+                          <ArrowUp className="h-4 w-4" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => moveChord(i, 1)}
+                          disabled={i === form.image_paths.length - 1}
+                          className="rounded-lg border border-border p-1.5 hover:border-primary disabled:opacity-30"
+                          aria-label="Mover para baixo"
+                        >
+                          <ArrowDown className="h-4 w-4" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => removeChord(i)}
+                          className="rounded-lg border border-border p-1.5 text-destructive hover:border-destructive"
+                          aria-label="Remover imagem"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
             <input
               type="file"
               accept="image/*"
+              multiple
               disabled={uploading !== null}
               onChange={(e) => {
-                const f = e.target.files?.[0];
-                if (f) void handleFile(f, "cifras");
+                const files = Array.from(e.target.files ?? []);
+                e.target.value = "";
+                if (files.length > 0) void handleChords(files);
               }}
               className="w-full text-sm text-muted-foreground file:mr-3 file:rounded-lg file:border-0 file:bg-riffly-purple file:px-3 file:py-1.5 file:text-white"
             />

@@ -11,18 +11,24 @@ const songSchema = z.object({
   youtube_url: z.string().url().nullable().optional(),
   spotify_url: z.string().url().nullable().optional(),
   image_path: z.string().nullable().optional(),
+  image_paths: z.array(z.string().min(1)).max(30).optional(),
   cover_path: z.string().nullable().optional(),
 });
 
 const songIdSchema = z.object({ id: z.string().uuid() });
 
 function normalizeSongInput(data: z.infer<typeof songSchema>) {
+  // A ordem do array é a ordem em que as imagens são exibidas.
+  // `image_path` continua sendo gravado com a 1ª imagem, por compatibilidade.
+  const imagePaths =
+    data.image_paths ?? (data.image_path ? [data.image_path] : []);
   return {
     ...data,
     album: data.album ?? null,
     youtube_url: data.youtube_url ?? null,
     spotify_url: data.spotify_url ?? null,
-    image_path: data.image_path ?? null,
+    image_paths: imagePaths,
+    image_path: imagePaths[0] ?? null,
     cover_path: data.cover_path ?? null,
   };
 }
