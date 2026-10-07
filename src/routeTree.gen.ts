@@ -19,6 +19,8 @@ import { Route as MetronomoRouteImport } from './routes/metronomo'
 import { Route as ReconhecerRouteImport } from './routes/reconhecer'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedDonoRouteImport } from './routes/_authenticated/dono'
+import { Route as AuthenticatedFavoritosRouteImport } from './routes/_authenticated/favoritos'
+import { Route as AuthenticatedRecentesRouteImport } from './routes/_authenticated/recentes'
 import { Route as ApiImgRouteImport } from './routes/api/img'
 import { Route as CifrasIndexRouteImport } from './routes/cifras.index'
 import { Route as CifrasIdRouteImport } from './routes/cifras.$id'
@@ -74,6 +76,16 @@ const AuthenticatedDonoRoute = AuthenticatedDonoRouteImport.update({
   path: '/dono',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedFavoritosRoute = AuthenticatedFavoritosRouteImport.update({
+  id: '/favoritos',
+  path: '/favoritos',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedRecentesRoute = AuthenticatedRecentesRouteImport.update({
+  id: '/recentes',
+  path: '/recentes',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const ApiImgRoute = ApiImgRouteImport.update({
   id: '/api/img',
   path: '/api/img',
@@ -110,6 +122,8 @@ export interface FileRoutesByFullPath {
   '/reconhecer': typeof ReconhecerRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/dono': typeof AuthenticatedDonoRoute
+  '/favoritos': typeof AuthenticatedFavoritosRoute
+  '/recentes': typeof AuthenticatedRecentesRoute
   '/api/img': typeof ApiImgRoute
   '/cifras/$id': typeof CifrasIdRoute
   '/cifras/': typeof CifrasIndexRoute
@@ -125,6 +139,8 @@ export interface FileRoutesByTo {
   '/reconhecer': typeof ReconhecerRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/dono': typeof AuthenticatedDonoRoute
+  '/favoritos': typeof AuthenticatedFavoritosRoute
+  '/recentes': typeof AuthenticatedRecentesRoute
   '/api/img': typeof ApiImgRoute
   '/cifras/$id': typeof CifrasIdRoute
   '/cifras': typeof CifrasIndexRoute
@@ -143,6 +159,8 @@ export interface FileRoutesById {
   '/reconhecer': typeof ReconhecerRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/_authenticated/dono': typeof AuthenticatedDonoRoute
+  '/_authenticated/favoritos': typeof AuthenticatedFavoritosRoute
+  '/_authenticated/recentes': typeof AuthenticatedRecentesRoute
   '/api/img': typeof ApiImgRoute
   '/cifras/$id': typeof CifrasIdRoute
   '/cifras/': typeof CifrasIndexRoute
@@ -161,6 +179,8 @@ export interface FileRouteTypes {
     | '/reconhecer'
     | '/admin'
     | '/dono'
+    | '/favoritos'
+    | '/recentes'
     | '/api/img'
     | '/cifras/$id'
     | '/cifras/'
@@ -176,6 +196,8 @@ export interface FileRouteTypes {
     | '/reconhecer'
     | '/admin'
     | '/dono'
+    | '/favoritos'
+    | '/recentes'
     | '/api/img'
     | '/cifras/$id'
     | '/cifras'
@@ -193,6 +215,8 @@ export interface FileRouteTypes {
     | '/reconhecer'
     | '/_authenticated/admin'
     | '/_authenticated/dono'
+    | '/_authenticated/favoritos'
+    | '/_authenticated/recentes'
     | '/api/img'
     | '/cifras/$id'
     | '/cifras/'
@@ -285,6 +309,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDonoRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/favoritos': {
+      id: '/_authenticated/favoritos'
+      path: '/favoritos'
+      fullPath: '/favoritos'
+      preLoaderRoute: typeof AuthenticatedFavoritosRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/recentes': {
+      id: '/_authenticated/recentes'
+      path: '/recentes'
+      fullPath: '/recentes'
+      preLoaderRoute: typeof AuthenticatedRecentesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/api/img': {
       id: '/api/img'
       path: '/api/img'
@@ -337,11 +375,15 @@ const AuthenticatedAdminRouteWithChildren =
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRouteWithChildren
   AuthenticatedDonoRoute: typeof AuthenticatedDonoRoute
+  AuthenticatedFavoritosRoute: typeof AuthenticatedFavoritosRoute
+  AuthenticatedRecentesRoute: typeof AuthenticatedRecentesRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRouteWithChildren,
   AuthenticatedDonoRoute: AuthenticatedDonoRoute,
+  AuthenticatedFavoritosRoute: AuthenticatedFavoritosRoute,
+  AuthenticatedRecentesRoute: AuthenticatedRecentesRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =

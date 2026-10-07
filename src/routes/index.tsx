@@ -101,9 +101,16 @@ function FavoritesSection() {
   const songs = (data ?? []) as Song[];
   return (
     <div className="rounded-2xl border border-border bg-card p-4">
-      <h2 className="mb-3 flex items-center gap-2 text-lg font-semibold text-foreground">
-        <Heart className="h-5 w-5 text-destructive" /> Favoritos
-      </h2>
+      <div className="mb-3 flex items-center justify-between gap-2">
+        <h2 className="flex items-center gap-2 text-lg font-semibold text-foreground">
+          <Heart className="h-5 w-5 text-destructive" /> Favoritos
+        </h2>
+        {songs.length > 4 && (
+          <Link to="/favoritos" className="text-sm font-medium text-primary hover:underline">
+            Ver todos →
+          </Link>
+        )}
+      </div>
       {songs.length === 0 ? (
         <p className="text-sm text-muted-foreground">Nenhuma música favoritada ainda.</p>
       ) : (
@@ -126,9 +133,16 @@ function RecentSection() {
   const songs = (data ?? []) as Song[];
   return (
     <div className="rounded-2xl border border-border bg-card p-4">
-      <h2 className="mb-3 flex items-center gap-2 text-lg font-semibold text-foreground">
-        <Clock className="h-5 w-5 text-primary" /> Recentes
-      </h2>
+      <div className="mb-3 flex items-center justify-between gap-2">
+        <h2 className="flex items-center gap-2 text-lg font-semibold text-foreground">
+          <Clock className="h-5 w-5 text-primary" /> Recentes
+        </h2>
+        {songs.length > 4 && (
+          <Link to="/recentes" className="text-sm font-medium text-primary hover:underline">
+            Ver todos →
+          </Link>
+        )}
+      </div>
       {songs.length === 0 ? (
         <p className="text-sm text-muted-foreground">Nenhuma música vista ainda.</p>
       ) : (

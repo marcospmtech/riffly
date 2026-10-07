@@ -53,6 +53,19 @@ export const listRecents = createServerFn({ method: "GET" })
     return (data ?? []).map((r) => ({ ...r.song, viewed_at: r.viewed_at }));
   });
 
+export const listAllRecents = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { data, error } = await context.supabase
+      .from("recents")
+      .select("song_id, viewed_at, song:songs(*)")
+      .eq("user_id", context.userId)
+      .order("viewed_at", { ascending: false })
+      .limit(500);
+    if (error) throw error;
+    return (data ?? []).map((r) => ({ ...r.song, viewed_at: r.viewed_at }));
+  });
+
 export const addRecent = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input) => favoriteSchema.parse(input))
