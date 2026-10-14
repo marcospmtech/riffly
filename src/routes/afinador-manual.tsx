@@ -22,16 +22,15 @@ export const Route = createFileRoute("/afinador-manual")({
 
 interface TuningPreset {
   name: string;
-  instrument: "Guitarra" | "Violão";
   notes: { label: string; freq: number }[];
 }
 
 type TuningStatus = "waiting" | "tighten" | "loosen" | "tuned";
 
+// Ordem fixa definida pelo usuário — não reordenar nem adicionar afinações sem atualizar aqui.
 export const TUNINGS: TuningPreset[] = [
   {
-    name: "Padrão (E A D G B E)",
-    instrument: "Guitarra",
+    name: "Afinação padrão de 6 cordas (E Standard)",
     notes: [
       { label: "E6", freq: 82.41 },
       { label: "A5", freq: 110.0 },
@@ -42,34 +41,31 @@ export const TUNINGS: TuningPreset[] = [
     ],
   },
   {
-    name: "Drop D (D A D G B E)",
-    instrument: "Guitarra",
+    name: "Meio tom abaixo (Eb Standard)",
     notes: [
-      { label: "D6", freq: 73.42 },
-      { label: "A5", freq: 110.0 },
-      { label: "D4", freq: 146.83 },
-      { label: "G3", freq: 196.0 },
-      { label: "B2", freq: 246.94 },
-      { label: "E1", freq: 329.63 },
+      { label: "Eb6", freq: 77.78 },
+      { label: "Ab5", freq: 103.83 },
+      { label: "Db4", freq: 138.59 },
+      { label: "Gb3", freq: 185.0 },
+      { label: "Bb2", freq: 233.08 },
+      { label: "Eb1", freq: 311.13 },
     ],
   },
   {
-    name: "Open G (D G D G B D)",
-    instrument: "Guitarra",
+    name: "Um tom abaixo (D Standard)",
     notes: [
       { label: "D6", freq: 73.42 },
       { label: "G5", freq: 98.0 },
-      { label: "D4", freq: 146.83 },
-      { label: "G3", freq: 196.0 },
-      { label: "B2", freq: 246.94 },
+      { label: "C4", freq: 130.81 },
+      { label: "F3", freq: 174.61 },
+      { label: "A2", freq: 220.0 },
       { label: "D1", freq: 293.66 },
     ],
   },
   {
-    name: "Padrão violão (E A D G B E)",
-    instrument: "Violão",
+    name: "Drop D",
     notes: [
-      { label: "E6", freq: 82.41 },
+      { label: "D6", freq: 73.42 },
       { label: "A5", freq: 110.0 },
       { label: "D4", freq: 146.83 },
       { label: "G3", freq: 196.0 },
@@ -78,8 +74,18 @@ export const TUNINGS: TuningPreset[] = [
     ],
   },
   {
-    name: "Drop C (C G C F A D)",
-    instrument: "Guitarra",
+    name: "Drop C# (Drop Db)",
+    notes: [
+      { label: "C#6", freq: 69.3 },
+      { label: "G#5", freq: 103.83 },
+      { label: "C#4", freq: 138.59 },
+      { label: "F#3", freq: 185.0 },
+      { label: "A#2", freq: 233.08 },
+      { label: "D#1", freq: 311.13 },
+    ],
+  },
+  {
+    name: "Drop C",
     notes: [
       { label: "C6", freq: 65.41 },
       { label: "G5", freq: 98.0 },
@@ -90,20 +96,73 @@ export const TUNINGS: TuningPreset[] = [
     ],
   },
   {
-    name: "Padrão em Ré (D G C F A D)",
-    instrument: "Guitarra",
+    name: "Drop B",
     notes: [
-      { label: "D6", freq: 73.42 },
+      { label: "B6", freq: 61.74 },
+      { label: "F#5", freq: 92.5 },
+      { label: "B4", freq: 123.47 },
+      { label: "E3", freq: 164.81 },
+      { label: "G#2", freq: 207.65 },
+      { label: "C#1", freq: 277.18 },
+    ],
+  },
+  {
+    name: "Drop A",
+    notes: [
+      { label: "A6", freq: 55.0 },
+      { label: "E5", freq: 82.41 },
+      { label: "A4", freq: 110.0 },
+      { label: "D3", freq: 146.83 },
+      { label: "F#2", freq: 185.0 },
+      { label: "B1", freq: 246.94 },
+    ],
+  },
+  {
+    name: "Open A",
+    notes: [
+      { label: "E6", freq: 82.41 },
+      { label: "A5", freq: 110.0 },
+      { label: "E4", freq: 164.81 },
+      { label: "A3", freq: 220.0 },
+      { label: "C#2", freq: 277.18 },
+      { label: "E1", freq: 329.63 },
+    ],
+  },
+  {
+    name: "Open C",
+    notes: [
+      { label: "C6", freq: 65.41 },
       { label: "G5", freq: 98.0 },
       { label: "C4", freq: 130.81 },
-      { label: "F3", freq: 174.61 },
+      { label: "G3", freq: 196.0 },
+      { label: "C2", freq: 261.63 },
+      { label: "E1", freq: 329.63 },
+    ],
+  },
+  {
+    name: "Open D",
+    notes: [
+      { label: "D6", freq: 73.42 },
+      { label: "A5", freq: 110.0 },
+      { label: "D4", freq: 146.83 },
+      { label: "F#3", freq: 185.0 },
       { label: "A2", freq: 220.0 },
       { label: "D1", freq: 293.66 },
     ],
   },
   {
-    name: "DADGAD (D A D G A D)",
-    instrument: "Guitarra",
+    name: "Open E",
+    notes: [
+      { label: "E6", freq: 82.41 },
+      { label: "B5", freq: 123.47 },
+      { label: "E4", freq: 164.81 },
+      { label: "G#3", freq: 207.65 },
+      { label: "B2", freq: 246.94 },
+      { label: "E1", freq: 329.63 },
+    ],
+  },
+  {
+    name: "DADGAD",
     notes: [
       { label: "D6", freq: 73.42 },
       { label: "A5", freq: 110.0 },
@@ -315,7 +374,7 @@ function AfinadorManualPage() {
           >
             {TUNINGS.map((t, i) => (
               <option key={t.name} value={i}>
-                {t.instrument} — {t.name}
+                {t.name}
               </option>
             ))}
           </select>

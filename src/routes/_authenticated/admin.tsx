@@ -369,7 +369,7 @@ function SongFormDialog({
                   const notes = tuningNotes(t);
                   return (
                     <option key={t.name} value={notes}>
-                      {t.name} — {t.instrument}
+                      {t.name}
                     </option>
                   );
                 })}

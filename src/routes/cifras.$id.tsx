@@ -111,17 +111,17 @@ function CifraDetailPage() {
         </button>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="grid gap-6 lg:grid-cols-2 lg:items-start">
         <div className="rounded-2xl border border-border bg-card p-4">
           <h2 className="mb-3 text-sm font-semibold text-muted-foreground">Cifra</h2>
           {chordImages.length > 0 ? (
-            <div className="flex flex-col gap-3">
+            <div className="flex max-h-[70vh] flex-col gap-3 overflow-y-auto overscroll-contain">
               {chordImages.map((src, i) => (
                 <img
                   key={`${src}-${i}`}
                   src={src}
                   alt={`Cifra de ${song.title}${chordImages.length > 1 ? ` (parte ${i + 1})` : ""}`}
-                  className="w-full rounded-lg"
+                  className="w-full shrink-0 rounded-lg"
                   loading={i === 0 ? "eager" : "lazy"}
                 />
               ))}
