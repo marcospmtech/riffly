@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Plus, Edit, Trash2, X, Music2, ArrowUp, ArrowDown } from "lucide-react";
+import { Plus, Edit, Trash2, X, Music2, ArrowUp, ArrowDown, Search } from "lucide-react";
 import { listSongs, createSong, updateSong, deleteSong } from "@/lib/songs.functions";
 import { uploadChordImage } from "@/lib/upload.functions";
 import { listSongRequests, deleteSongRequest } from "@/lib/song-requests.functions";
@@ -48,11 +48,32 @@ function AdminPage() {
   const role = useRole();
   const qc = useQueryClient();
   const [editing, setEditing] = useState<SongForm | null>(null);
+  const [search, setSearch] = useState("");
+  const [showSuggestions, setShowSuggestions] = useState(false);
 
   const { data: songs = [], isLoading } = useQuery({
     queryKey: ["songs"],
     queryFn: () => listSongs(),
   });
+
+  const q = search.trim().toLowerCase();
+  const filteredSongs = q
+    ? songs.filter((s: any) => s.title.toLowerCase().includes(q) || s.author.toLowerCase().includes(q))
+    : songs;
+  const suggestions = q.length >= 2 ? filteredSongs.slice(0, 6) : [];
+
+  const openEdit = (s: any) =>
+    setEditing({
+      id: s.id,
+      title: s.title,
+      author: s.author,
+      album: s.album ?? "",
+      bpm: s.bpm,
+      tuning: s.tuning,
+      youtube_url: s.youtube_url ?? "",
+      image_paths: getSongChordPaths(s),
+      cover_path: s.cover_path ?? "",
+    });
 
   const { data: requests = [] } = useQuery({
     queryKey: ["song-requests"],
@@ -182,11 +203,58 @@ function AdminPage() {
                 <th className="p-3">Música</th>
                 <th className="p-3">BPM</th>
                 <th className="p-3">Afinação</th>
-                <th className="p-3"></th>
+                <th className="p-3">
+                  <div className="relative ml-auto w-full max-w-[220px]">
+                    <Search className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                    <input
+                      type="text"
+                      value={search}
+                      onChange={(e) => setSearch(e.target.value)}
+                      onFocus={() => setShowSuggestions(true)}
+                      onBlur={() => setTimeout(() => setShowSuggestions(false), 150)}
+                      placeholder="Buscar música..."
+                      aria-label="Buscar música"
+                      className="h-9 w-full rounded-lg border border-input bg-background pl-8 pr-3 text-xs font-normal normal-case text-foreground focus:border-primary focus:outline-none"
+                    />
+                    {showSuggestions && suggestions.length > 0 && (
+                      <div className="absolute left-0 right-0 top-full z-20 mt-1 max-h-72 overflow-y-auto rounded-lg border border-border bg-card shadow-riffly">
+                        {suggestions.map((s: any) => {
+                          const cover = getSongImage(s.cover_path);
+                          return (
+                            <button
+                              key={s.id}
+                              type="button"
+                              onClick={() => {
+                                setSearch(s.title);
+                                setShowSuggestions(false);
+                                openEdit(s);
+                              }}
+                              className="flex w-full items-center gap-2 border-b border-border p-2 text-left normal-case last:border-0 hover:bg-background"
+                            >
+                              <div className="h-8 w-8 shrink-0 overflow-hidden rounded-md bg-background">
+                                {cover ? (
+                                  <img src={cover} alt="" className="h-full w-full object-cover" />
+                                ) : (
+                                  <div className="flex h-full w-full items-center justify-center">
+                                    <Music2 className="h-3.5 w-3.5 text-muted-foreground" />
+                                  </div>
+                                )}
+                              </div>
+                              <div className="min-w-0">
+                                <div className="truncate text-xs font-semibold text-foreground">{s.title}</div>
+                                <div className="truncate text-[11px] text-muted-foreground">{s.author}</div>
+                              </div>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                </th>
               </tr>
             </thead>
             <tbody>
-              {songs.map((s: any) => {
+              {filteredSongs.map((s: any) => {
                 const cover = getSongImage(s.cover_path);
                 return (
                   <tr key={s.id} className="border-b border-border last:border-0">
@@ -212,19 +280,7 @@ function AdminPage() {
                     <td className="p-3 text-right">
                       <div className="inline-flex gap-2">
                         <button
-                          onClick={() =>
-                            setEditing({
-                              id: s.id,
-                              title: s.title,
-                              author: s.author,
-                              album: s.album ?? "",
-                              bpm: s.bpm,
-                              tuning: s.tuning,
-                              youtube_url: s.youtube_url ?? "",
-                              image_paths: getSongChordPaths(s),
-                              cover_path: s.cover_path ?? "",
-                            })
-                          }
+                          onClick={() => openEdit(s)}
                           className="rounded-lg border border-border p-2 hover:border-primary"
                         >
                           <Edit className="h-4 w-4" />
@@ -242,10 +298,10 @@ function AdminPage() {
                   </tr>
                 );
               })}
-              {songs.length === 0 && (
+              {filteredSongs.length === 0 && (
                 <tr>
                   <td colSpan={4} className="p-8 text-center text-muted-foreground">
-                    Nenhuma música cadastrada.
+                    {songs.length === 0 ? "Nenhuma música cadastrada." : "Nenhuma música encontrada."}
                   </td>
                 </tr>
               )}

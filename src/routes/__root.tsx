@@ -1,4 +1,4 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider, useQuery } from "@tanstack/react-query";
 import {
   Outlet,
   Link,
@@ -9,12 +9,14 @@ import {
 } from "@tanstack/react-router";
 import { useState, type ReactNode } from "react";
 import { Toaster } from "@/components/ui/sonner";
-import { Menu, Search, X } from "lucide-react";
+import { Menu, Search, X, Music2 } from "lucide-react";
 
 import appCss from "../styles.css?url";
 import { AuthProvider, useAuth } from "@/hooks/use-auth";
 import { useRole } from "@/hooks/use-role";
 import { supabase } from "@/integrations/supabase/client";
+import { listSongs } from "@/lib/songs.functions";
+import { getSongImage } from "@/components/song-card";
 import logoUrl from "@/assets/riffly-logo.png";
 
 function NotFoundComponent() {
@@ -267,10 +269,31 @@ function Header() {
 function GlobalSearch() {
   const router = useRouter();
   const [query, setQuery] = useState("");
+  const [showSuggestions, setShowSuggestions] = useState(false);
+
+  const { data: songs = [] } = useQuery({
+    queryKey: ["songs"],
+    queryFn: () => listSongs(),
+  });
+
+  const q = query.trim().toLowerCase();
+  const suggestions =
+    q.length >= 2
+      ? (songs as any[])
+          .filter((s) => s.title.toLowerCase().includes(q) || s.author.toLowerCase().includes(q))
+          .slice(0, 6)
+      : [];
+
+  const goToSong = (id: string) => {
+    setShowSuggestions(false);
+    setQuery("");
+    router.navigate({ to: "/cifras/$id", params: { id } });
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!query.trim()) return;
+    setShowSuggestions(false);
     router.navigate({
       to: "/cifras",
       search: { q: query.trim() },
@@ -284,6 +307,8 @@ function GlobalSearch() {
         placeholder="Pesquise por uma música..."
         value={query}
         onChange={(e) => setQuery(e.target.value)}
+        onFocus={() => setShowSuggestions(true)}
+        onBlur={() => setTimeout(() => setShowSuggestions(false), 150)}
         className="h-10 w-full rounded-full border-0 bg-white pl-4 pr-10 text-sm text-primary-foreground placeholder:text-primary-foreground/60 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-riffly-yellow"
       />
       <button
@@ -293,6 +318,36 @@ function GlobalSearch() {
       >
         <Search className="h-4 w-4" />
       </button>
+
+      {showSuggestions && suggestions.length > 0 && (
+        <div className="absolute left-0 right-0 top-full z-50 mt-2 max-h-80 overflow-y-auto rounded-2xl border border-border bg-card shadow-riffly">
+          {suggestions.map((s: any) => {
+            const cover = getSongImage(s.cover_path);
+            return (
+              <button
+                key={s.id}
+                type="button"
+                onClick={() => goToSong(s.id)}
+                className="flex w-full items-center gap-3 border-b border-border p-2.5 text-left last:border-0 hover:bg-background"
+              >
+                <div className="h-10 w-10 shrink-0 overflow-hidden rounded-lg bg-background">
+                  {cover ? (
+                    <img src={cover} alt="" className="h-full w-full object-cover" />
+                  ) : (
+                    <div className="flex h-full w-full items-center justify-center">
+                      <Music2 className="h-4 w-4 text-muted-foreground" />
+                    </div>
+                  )}
+                </div>
+                <div className="min-w-0">
+                  <div className="truncate text-sm font-semibold text-foreground">{s.title}</div>
+                  <div className="truncate text-xs text-muted-foreground">{s.author}</div>
+                </div>
+              </button>
+            );
+          })}
+        </div>
+      )}
     </form>
   );
 }

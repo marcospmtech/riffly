@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { UserPlus, Key, Trash2, X, Shield, Crown } from "lucide-react";
+import { UserPlus, Key, Trash2, X, Shield, Crown, Search } from "lucide-react";
 import { listUsers, createAdmin, resetUserPassword, deleteUser, updateUserRole, type AdminUser, type AccountRole } from "@/lib/admin.functions";
 import { useRole } from "@/hooks/use-role";
 import { useAuth } from "@/hooks/use-auth";
@@ -29,12 +29,18 @@ function DonoPage() {
   const qc = useQueryClient();
   const [showCreate, setShowCreate] = useState(false);
   const [resetPwd, setResetPwd] = useState<{ email: string; password: string } | null>(null);
+  const [search, setSearch] = useState("");
 
   const { data: users = [], isLoading, error } = useQuery({
     queryKey: ["admin-users"],
     queryFn: () => listUsers(),
     enabled: role === "owner",
   });
+
+  const q = search.trim().toLowerCase();
+  const filteredUsers = q
+    ? users.filter((u) => (u.display_name ?? "").toLowerCase().includes(q) || u.email.toLowerCase().includes(q))
+    : users;
 
   const resetMut = useMutation({
     mutationFn: (u: AdminUser) => resetUserPassword({ data: { user_id: u.id } }),
@@ -97,11 +103,23 @@ function DonoPage() {
                 <th className="p-3">Usuário</th>
                 <th className="p-3">Papel</th>
                 <th className="p-3">Criada em</th>
-                <th className="p-3"></th>
+                <th className="p-3">
+                  <div className="relative ml-auto w-full max-w-[220px]">
+                    <Search className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                    <input
+                      type="text"
+                      value={search}
+                      onChange={(e) => setSearch(e.target.value)}
+                      placeholder="Buscar usuário..."
+                      aria-label="Buscar usuário"
+                      className="h-9 w-full rounded-lg border border-input bg-background pl-8 pr-3 text-xs font-normal normal-case text-foreground focus:border-primary focus:outline-none"
+                    />
+                  </div>
+                </th>
               </tr>
             </thead>
             <tbody>
-              {users.map((u) => (
+              {filteredUsers.map((u) => (
                 <tr key={u.id} className="border-b border-border last:border-0">
                   <td className="p-3">
                     <div className="font-medium text-foreground">{u.display_name || u.email}</div>
@@ -161,6 +179,13 @@ function DonoPage() {
                   </td>
                 </tr>
               ))}
+              {filteredUsers.length === 0 && (
+                <tr>
+                  <td colSpan={4} className="p-8 text-center text-muted-foreground">
+                    {users.length === 0 ? "Nenhum usuário cadastrado." : "Nenhum usuário encontrado."}
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
