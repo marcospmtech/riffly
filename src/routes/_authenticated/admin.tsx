@@ -49,7 +49,6 @@ function AdminPage() {
   const qc = useQueryClient();
   const [editing, setEditing] = useState<SongForm | null>(null);
   const [search, setSearch] = useState("");
-  const [showSuggestions, setShowSuggestions] = useState(false);
 
   const { data: songs = [], isLoading } = useQuery({
     queryKey: ["songs"],
@@ -60,7 +59,6 @@ function AdminPage() {
   const filteredSongs = q
     ? songs.filter((s: any) => s.title.toLowerCase().includes(q) || s.author.toLowerCase().includes(q))
     : songs;
-  const suggestions = q.length >= 2 ? filteredSongs.slice(0, 6) : [];
 
   const openEdit = (s: any) =>
     setEditing({
@@ -210,45 +208,10 @@ function AdminPage() {
                       type="text"
                       value={search}
                       onChange={(e) => setSearch(e.target.value)}
-                      onFocus={() => setShowSuggestions(true)}
-                      onBlur={() => setTimeout(() => setShowSuggestions(false), 150)}
                       placeholder="Buscar música..."
                       aria-label="Buscar música"
                       className="h-9 w-full rounded-lg border border-input bg-background pl-8 pr-3 text-xs font-normal normal-case text-foreground focus:border-primary focus:outline-none"
                     />
-                    {showSuggestions && suggestions.length > 0 && (
-                      <div className="absolute left-0 right-0 top-full z-20 mt-1 max-h-72 overflow-y-auto rounded-lg border border-border bg-card shadow-riffly">
-                        {suggestions.map((s: any) => {
-                          const cover = getSongImage(s.cover_path);
-                          return (
-                            <button
-                              key={s.id}
-                              type="button"
-                              onClick={() => {
-                                setSearch(s.title);
-                                setShowSuggestions(false);
-                                openEdit(s);
-                              }}
-                              className="flex w-full items-center gap-2 border-b border-border p-2 text-left normal-case last:border-0 hover:bg-background"
-                            >
-                              <div className="h-8 w-8 shrink-0 overflow-hidden rounded-md bg-background">
-                                {cover ? (
-                                  <img src={cover} alt="" className="h-full w-full object-cover" />
-                                ) : (
-                                  <div className="flex h-full w-full items-center justify-center">
-                                    <Music2 className="h-3.5 w-3.5 text-muted-foreground" />
-                                  </div>
-                                )}
-                              </div>
-                              <div className="min-w-0">
-                                <div className="truncate text-xs font-semibold text-foreground">{s.title}</div>
-                                <div className="truncate text-[11px] text-muted-foreground">{s.author}</div>
-                              </div>
-                            </button>
-                          );
-                        })}
-                      </div>
-                    )}
                   </div>
                 </th>
               </tr>

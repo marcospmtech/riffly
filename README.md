@@ -6,7 +6,7 @@
 
 - **Chromatic tuner** — listens through the microphone and shows the closest note in real time, with a needle that points left/right to tell you whether to tighten or loosen the string.
 - **Manual tuner** — pick a tuning (multiple presets for guitar and bass) and get guided, string-by-string feedback instead of guessing.
-- **Metronome** — configurable BPM (40–220, default 60), beat subdivision, and a count-in before the loop restarts.
+- **Metronome** — configurable BPM (40–220, default 60), beats-per-bar and note subdivision (quarter, eighth, eighth-triplet, sixteenth), adjustable click volume, and an accented first beat.
 - **Chord sheets** — each song has a chord sheet image, an embedded YouTube player, and one-tap shortcuts: jump to the metronome with the song's BPM already set, or to the manual tuner with the song's tuning pre-selected.
 - **Song recognition** — listen through the microphone and identify what's currently playing via ACRCloud, then jump straight to its YouTube video, Spotify link, and (if it's already in the library) its chord sheet.
 - **Favorites & recents** — signed-in users get quick access to the songs they use most.
@@ -67,7 +67,7 @@
 bun install
 ```
 
-Copy `.env.example` (or create `.env`) with the following variables:
+Create a `.env` file in the project root with the following variables (there is no `.env.example` committed — the values below reflect the current variable names in use):
 
 ```env
 SUPABASE_PROJECT_ID=

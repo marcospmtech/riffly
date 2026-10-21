@@ -16,7 +16,7 @@ dist-ssr
 .nitro
 *.local
 
-# Segredos — nunca versionar
+# Secrets
 .env
 .env.*
 !.env.example
