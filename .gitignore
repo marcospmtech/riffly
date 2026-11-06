@@ -20,7 +20,6 @@ dist-ssr
 .env
 .env.*
 !.env.example
-supabase/migrations/*.sql
 
 # Wrangler / Cloudflare
 .wrangler/

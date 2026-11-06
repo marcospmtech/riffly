@@ -12,6 +12,7 @@
 - **Favorites & recents** — signed-in users get quick access to the songs they use most.
 - **Admin panel** — staff can create, edit, and delete songs (title, author, album, BPM, tuning, cover image, chord sheet image), and manage user-submitted song requests.
 - **Owner panel** — a single owner account manages every user: promote/demote roles (`owner` > `admin` > `user`), reset passwords, and delete accounts.
+- **Reports** (owner only) — a bar chart of songs added vs. songs favorited per month, for years 2026–2030 (years with no data yet just render an empty chart). Reports can be saved as a permanent snapshot (so the numbers stay even if the underlying songs/favorites are later deleted) and printed directly from the page.
 - **Auth** — email/password and Google sign-in, backed by Supabase Auth.
 
 ## Screenshots
@@ -40,6 +41,10 @@
 |---|---|
 | ![Owner panel](public/img/owner.png) | ![Add admin](public/img/add_admin.png) |
 
+| Reports |
+|---|
+| ![Monthly reports](public/img/report.png) |
+
 ## Tech stack
 
 | Layer | Technology |
@@ -50,6 +55,7 @@
 | Server build target | Nitro (production builds only — see note below) |
 | Backend / data | Supabase (Postgres, Auth, Storage) |
 | Validation | Zod |
+| Charts | Recharts (via shadcn/ui chart wrapper) |
 | Package manager & runtime | Bun |
 | Third-party API | ACRCloud (audio recognition) |
 
