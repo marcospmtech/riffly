@@ -21,6 +21,7 @@ import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedDonoRouteImport } from './routes/_authenticated/dono'
 import { Route as AuthenticatedFavoritosRouteImport } from './routes/_authenticated/favoritos'
 import { Route as AuthenticatedRecentesRouteImport } from './routes/_authenticated/recentes'
+import { Route as AuthenticatedRelatoriosRouteImport } from './routes/_authenticated/relatorios'
 import { Route as ApiImgRouteImport } from './routes/api/img'
 import { Route as CifrasIndexRouteImport } from './routes/cifras.index'
 import { Route as CifrasIdRouteImport } from './routes/cifras.$id'
@@ -86,6 +87,11 @@ const AuthenticatedRecentesRoute = AuthenticatedRecentesRouteImport.update({
   path: '/recentes',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedRelatoriosRoute = AuthenticatedRelatoriosRouteImport.update({
+  id: '/relatorios',
+  path: '/relatorios',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const ApiImgRoute = ApiImgRouteImport.update({
   id: '/api/img',
   path: '/api/img',
@@ -124,6 +130,7 @@ export interface FileRoutesByFullPath {
   '/dono': typeof AuthenticatedDonoRoute
   '/favoritos': typeof AuthenticatedFavoritosRoute
   '/recentes': typeof AuthenticatedRecentesRoute
+  '/relatorios': typeof AuthenticatedRelatoriosRoute
   '/api/img': typeof ApiImgRoute
   '/cifras/$id': typeof CifrasIdRoute
   '/cifras/': typeof CifrasIndexRoute
@@ -141,6 +148,7 @@ export interface FileRoutesByTo {
   '/dono': typeof AuthenticatedDonoRoute
   '/favoritos': typeof AuthenticatedFavoritosRoute
   '/recentes': typeof AuthenticatedRecentesRoute
+  '/relatorios': typeof AuthenticatedRelatoriosRoute
   '/api/img': typeof ApiImgRoute
   '/cifras/$id': typeof CifrasIdRoute
   '/cifras': typeof CifrasIndexRoute
@@ -161,6 +169,7 @@ export interface FileRoutesById {
   '/_authenticated/dono': typeof AuthenticatedDonoRoute
   '/_authenticated/favoritos': typeof AuthenticatedFavoritosRoute
   '/_authenticated/recentes': typeof AuthenticatedRecentesRoute
+  '/_authenticated/relatorios': typeof AuthenticatedRelatoriosRoute
   '/api/img': typeof ApiImgRoute
   '/cifras/$id': typeof CifrasIdRoute
   '/cifras/': typeof CifrasIndexRoute
@@ -181,6 +190,7 @@ export interface FileRouteTypes {
     | '/dono'
     | '/favoritos'
     | '/recentes'
+    | '/relatorios'
     | '/api/img'
     | '/cifras/$id'
     | '/cifras/'
@@ -198,6 +208,7 @@ export interface FileRouteTypes {
     | '/dono'
     | '/favoritos'
     | '/recentes'
+    | '/relatorios'
     | '/api/img'
     | '/cifras/$id'
     | '/cifras'
@@ -217,6 +228,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dono'
     | '/_authenticated/favoritos'
     | '/_authenticated/recentes'
+    | '/_authenticated/relatorios'
     | '/api/img'
     | '/cifras/$id'
     | '/cifras/'
@@ -323,6 +335,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedRecentesRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/relatorios': {
+      id: '/_authenticated/relatorios'
+      path: '/relatorios'
+      fullPath: '/relatorios'
+      preLoaderRoute: typeof AuthenticatedRelatoriosRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/api/img': {
       id: '/api/img'
       path: '/api/img'
@@ -377,6 +396,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedDonoRoute: typeof AuthenticatedDonoRoute
   AuthenticatedFavoritosRoute: typeof AuthenticatedFavoritosRoute
   AuthenticatedRecentesRoute: typeof AuthenticatedRecentesRoute
+  AuthenticatedRelatoriosRoute: typeof AuthenticatedRelatoriosRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -384,6 +404,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDonoRoute: AuthenticatedDonoRoute,
   AuthenticatedFavoritosRoute: AuthenticatedFavoritosRoute,
   AuthenticatedRecentesRoute: AuthenticatedRecentesRoute,
+  AuthenticatedRelatoriosRoute: AuthenticatedRelatoriosRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =

@@ -363,7 +363,7 @@ function AfinadorManualPage() {
         <p className="mt-1 text-sm text-muted-foreground">Escolha a afinação e o Riffly orienta cada ajuste.</p>
       </div>
 
-      <div className="rounded-2xl border border-border bg-card p-6 shadow-riffly sm:p-8">
+      <div className="rounded-2xl border border-border bg-card p-6 sm:p-8">
         {/* Tuning selector */}
         <div className="mb-6">
           <label className="mb-1.5 block text-sm font-medium text-foreground">Afinação</label>

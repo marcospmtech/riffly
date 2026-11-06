@@ -191,6 +191,15 @@ function Header() {
               Dono
             </Link>
           )}
+          {!isLoading && user && isOwner && (
+            <Link
+              to="/relatorios"
+              className="rounded-md px-3 py-2 text-sm font-medium text-white/90 transition-colors hover:bg-white/10 hover:text-white"
+              activeProps={{ className: "bg-white/15 text-white" }}
+            >
+              Relatórios
+            </Link>
+          )}
         </nav>
 
         <div className="ml-auto flex items-center gap-2 md:ml-0">
@@ -254,6 +263,16 @@ function Header() {
                 onClick={() => setMobileOpen(false)}
               >
                 Dono
+              </Link>
+            )}
+            {!isLoading && user && isOwner && (
+              <Link
+                to="/relatorios"
+                className="rounded-md px-3 py-2 text-base font-medium text-white/90 hover:bg-white/10"
+                activeProps={{ className: "bg-white/15 text-white" }}
+                onClick={() => setMobileOpen(false)}
+              >
+                Relatórios
               </Link>
             )}
             <div className="mt-2 border-t border-white/10 pt-2">

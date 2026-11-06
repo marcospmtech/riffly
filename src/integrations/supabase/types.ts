@@ -96,6 +96,33 @@ export type Database = {
           },
         ]
       }
+      report_snapshots: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          rows: Json
+          updated_at: string
+          year: number
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          rows: Json
+          updated_at?: string
+          year: number
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          rows?: Json
+          updated_at?: string
+          year?: number
+        }
+        Relationships: []
+      }
       song_requests: {
         Row: {
           author: string

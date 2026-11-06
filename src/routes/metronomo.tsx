@@ -151,7 +151,7 @@ function MetronomoPage() {
         <p className="mt-1 text-sm text-muted-foreground">Toque com precisão e ritmo.</p>
       </div>
 
-      <div className="rounded-2xl border border-border bg-card p-6 shadow-riffly sm:p-8">
+      <div className="rounded-2xl border border-border bg-card p-6 sm:p-8">
         {/* Visual indicator */}
         <div className="mb-8 flex justify-center gap-2">
           {Array.from({ length: beatsPerBar }).map((_, i) => {

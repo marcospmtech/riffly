@@ -146,7 +146,7 @@ function AfinadorPage() {
         <p className="mt-1 text-sm text-muted-foreground">Afinar com detecção de nota em tempo real.</p>
       </div>
 
-      <div className="rounded-2xl border border-border bg-card p-6 shadow-riffly sm:p-8">
+      <div className="rounded-2xl border border-border bg-card p-6 sm:p-8">
         {error && (
           <div className="mb-4 rounded-lg bg-destructive/10 p-3 text-sm text-destructive">{error}</div>
         )}
@@ -234,7 +234,7 @@ function AfinadorPage() {
       </div>
 
       {/* Note list */}
-      <div className="mt-6 rounded-2xl border border-border bg-card p-4 shadow-riffly">
+      <div className="mt-6 rounded-2xl border border-border bg-card p-4">
         <h2 className="mb-3 text-sm font-semibold text-foreground">Todas as notas</h2>
         <div className="flex flex-wrap gap-2">
           {NOTES.map((note) => {
