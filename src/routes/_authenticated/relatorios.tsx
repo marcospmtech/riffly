@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import { getMonthlyReport, saveReportSnapshot } from "@/lib/reports.functions";
+import { Button } from "@/components/ui/button";
 import { useRole } from "@/hooks/use-role";
 import {
   ChartContainer,
@@ -92,7 +93,7 @@ function RelatoriosPage() {
               key={y}
               type="button"
               onClick={() => setYear(y)}
-              className={`rounded-md px-3 py-2 text-left text-sm font-medium transition-colors ${
+              className={`cursor-pointer rounded-md px-3 py-2 text-left text-sm font-medium transition-colors ${
                 y === year
                   ? "bg-primary text-primary-foreground"
                   : "text-foreground hover:bg-muted"
@@ -121,21 +122,12 @@ function RelatoriosPage() {
               )}
             </div>
             <div className="no-print flex gap-2">
-              <button
-                type="button"
-                onClick={() => saveMutation.mutate()}
-                disabled={saveMutation.isPending}
-                className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90 disabled:opacity-50"
-              >
+              <Button type="button" onClick={() => saveMutation.mutate()} disabled={saveMutation.isPending}>
                 {saveMutation.isPending ? "Salvando..." : "Salvar relatório"}
-              </button>
-              <button
-                type="button"
-                onClick={() => window.print()}
-                className="rounded-md border border-input bg-background px-4 py-2 text-sm font-medium text-foreground hover:bg-muted"
-              >
+              </Button>
+              <Button type="button" variant="outline" onClick={() => window.print()}>
                 Imprimir
-              </button>
+              </Button>
             </div>
           </div>
 

@@ -217,7 +217,7 @@ function AfinadorPage() {
         <div className="flex justify-center">
           <button
             onClick={isActive ? stop : start}
-            className={`flex h-16 w-16 items-center justify-center rounded-full shadow-lg transition-transform hover:scale-105 ${
+            className={`flex h-16 w-16 cursor-pointer items-center justify-center rounded-full shadow-lg transition-transform hover:scale-105 ${
               isActive ? "bg-destructive text-destructive-foreground" : "bg-primary text-primary-foreground"
             }`}
             aria-label={isActive ? "Parar microfone" : "Iniciar microfone"}

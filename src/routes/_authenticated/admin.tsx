@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Plus, Edit, Trash2, X, Music2, ArrowUp, ArrowDown, Search } from "lucide-react";
 import { listSongs, createSong, updateSong, deleteSong } from "@/lib/songs.functions";
+import { Button } from "@/components/ui/button";
 import { uploadChordImage } from "@/lib/upload.functions";
 import { listSongRequests, deleteSongRequest } from "@/lib/song-requests.functions";
 import { getSongImage, getSongChordPaths } from "@/components/song-card";
@@ -139,12 +140,9 @@ function AdminPage() {
           <h1 className="text-3xl font-bold text-foreground">Painel do administrador</h1>
           <p className="mt-1 text-sm text-muted-foreground">Gerencie a biblioteca de cifras.</p>
         </div>
-        <button
-          onClick={() => setEditing({ ...emptyForm })}
-          className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
-        >
+        <Button onClick={() => setEditing({ ...emptyForm })}>
           <Plus className="h-4 w-4" /> Nova música
-        </button>
+        </Button>
       </div>
 
       <div className="mb-8 rounded-2xl border border-border bg-card p-4">
@@ -169,21 +167,23 @@ function AdminPage() {
                   </p>
                 </div>
                 <div className="flex gap-2">
-                  <button
+                  <Button
+                    size="sm"
                     onClick={() =>
                       setEditing({ ...emptyForm, title: r.title, author: r.author, requestId: r.id })
                     }
-                    className="rounded-lg bg-primary px-3 py-2 text-xs font-semibold text-primary-foreground hover:bg-primary/90"
                   >
                     Adicionar música
-                  </button>
-                  <button
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="icon"
                     onClick={() => deleteRequestMutation.mutate(r.id)}
-                    className="rounded-lg border border-border p-2 text-destructive hover:border-destructive"
+                    className="text-destructive hover:text-destructive"
                     aria-label="Excluir pedido"
                   >
                     <Trash2 className="h-4 w-4" />
-                  </button>
+                  </Button>
                 </div>
               </div>
             ))}
@@ -242,20 +242,25 @@ function AdminPage() {
                     <td className="p-3 text-foreground">{s.tuning}</td>
                     <td className="p-3 text-right">
                       <div className="inline-flex gap-2">
-                        <button
+                        <Button
+                          variant="outline"
+                          size="icon"
                           onClick={() => openEdit(s)}
-                          className="rounded-lg border border-border p-2 hover:border-primary"
+                          aria-label={`Editar ${s.title}`}
                         >
                           <Edit className="h-4 w-4" />
-                        </button>
-                        <button
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="icon"
                           onClick={() => {
                             if (confirm(`Excluir "${s.title}"?`)) deleteMutation.mutate(s.id);
                           }}
-                          className="rounded-lg border border-border p-2 text-destructive hover:border-destructive"
+                          className="text-destructive hover:text-destructive"
+                          aria-label={`Excluir ${s.title}`}
                         >
                           <Trash2 className="h-4 w-4" />
-                        </button>
+                        </Button>
                       </div>
                     </td>
                   </tr>
@@ -361,9 +366,9 @@ function SongFormDialog({
       <div className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl border border-border bg-card p-6">
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-xl font-semibold text-foreground">{form.id ? "Editar" : "Nova"} música</h2>
-          <button onClick={onClose} className="rounded-lg p-1 hover:bg-background">
+          <Button type="button" variant="ghost" size="icon" onClick={onClose} aria-label="Fechar">
             <X className="h-5 w-5" />
-          </button>
+          </Button>
         </div>
 
         <div className="space-y-3">
@@ -439,32 +444,38 @@ function SongFormDialog({
                       </span>
                       {src && <img src={src} alt={`Cifra ${i + 1}`} className="h-16 w-24 rounded object-cover object-top" />}
                       <div className="ml-auto flex gap-1">
-                        <button
+                        <Button
                           type="button"
+                          variant="outline"
+                          size="icon"
                           onClick={() => moveChord(i, -1)}
                           disabled={i === 0}
-                          className="rounded-lg border border-border p-1.5 hover:border-primary disabled:opacity-30"
+                          className="h-8 w-8"
                           aria-label="Mover para cima"
                         >
                           <ArrowUp className="h-4 w-4" />
-                        </button>
-                        <button
+                        </Button>
+                        <Button
                           type="button"
+                          variant="outline"
+                          size="icon"
                           onClick={() => moveChord(i, 1)}
                           disabled={i === form.image_paths.length - 1}
-                          className="rounded-lg border border-border p-1.5 hover:border-primary disabled:opacity-30"
+                          className="h-8 w-8"
                           aria-label="Mover para baixo"
                         >
                           <ArrowDown className="h-4 w-4" />
-                        </button>
-                        <button
+                        </Button>
+                        <Button
                           type="button"
+                          variant="outline"
+                          size="icon"
                           onClick={() => removeChord(i)}
-                          className="rounded-lg border border-border p-1.5 text-destructive hover:border-destructive"
+                          className="h-8 w-8 text-destructive hover:text-destructive"
                           aria-label="Remover imagem"
                         >
                           <Trash2 className="h-4 w-4" />
-                        </button>
+                        </Button>
                       </div>
                     </li>
                   );
@@ -488,16 +499,12 @@ function SongFormDialog({
         </div>
 
         <div className="mt-6 flex justify-end gap-2">
-          <button onClick={onClose} className="rounded-lg border border-border px-4 py-2 text-sm text-foreground hover:bg-background">
+          <Button type="button" variant="outline" onClick={onClose}>
             Cancelar
-          </button>
-          <button
-            onClick={() => onSave(form)}
-            disabled={saving || !form.title || !form.author}
-            className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
-          >
+          </Button>
+          <Button type="button" onClick={() => onSave(form)} disabled={saving || !form.title || !form.author}>
             {saving ? "Salvando..." : "Salvar"}
-          </button>
+          </Button>
         </div>
       </div>
     </div>

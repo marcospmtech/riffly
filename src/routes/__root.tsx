@@ -9,6 +9,7 @@ import {
 } from "@tanstack/react-router";
 import { useState, type ReactNode } from "react";
 import { Toaster } from "@/components/ui/sonner";
+import { Button } from "@/components/ui/button";
 import { Menu, Search, X, Music2 } from "lucide-react";
 
 import appCss from "../styles.css?url";
@@ -55,21 +56,17 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
           Algo deu errado do nosso lado. Você pode tentar recarregar ou voltar para o início.
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-2">
-          <button
+          <Button
             onClick={() => {
               router.invalidate();
               reset();
             }}
-            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
           >
             Tentar novamente
-          </button>
-          <a
-            href="/"
-            className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent"
-          >
-            Voltar para o início
-          </a>
+          </Button>
+          <Button variant="outline" asChild>
+            <a href="/">Voltar para o início</a>
+          </Button>
         </div>
       </div>
     </div>
@@ -205,7 +202,7 @@ function Header() {
         <div className="ml-auto flex items-center gap-2 md:ml-0">
           <button
             type="button"
-            className="rounded-md p-2 text-white/90 hover:bg-white/10 md:hidden"
+            className="cursor-pointer rounded-md p-2 text-white/90 transition-colors hover:bg-white/10 md:hidden"
             onClick={() => setSearchOpen((v) => !v)}
             aria-label="Buscar"
           >
@@ -213,7 +210,7 @@ function Header() {
           </button>
           <button
             type="button"
-            className="rounded-md p-2 text-white/90 hover:bg-white/10 md:hidden"
+            className="cursor-pointer rounded-md p-2 text-white/90 transition-colors hover:bg-white/10 md:hidden"
             onClick={() => setMobileOpen((v) => !v)}
             aria-label={mobileOpen ? "Fechar menu" : "Abrir menu"}
           >
@@ -332,7 +329,7 @@ function GlobalSearch() {
       />
       <button
         type="submit"
-        className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full p-1.5 text-riffly-purple hover:bg-riffly-purple/10"
+        className="absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer rounded-full p-1.5 text-riffly-purple transition-colors hover:bg-riffly-purple/10"
         aria-label="Buscar"
       >
         <Search className="h-4 w-4" />
@@ -347,7 +344,7 @@ function GlobalSearch() {
                 key={s.id}
                 type="button"
                 onClick={() => goToSong(s.id)}
-                className="flex w-full items-center gap-3 border-b border-border p-2.5 text-left last:border-0 hover:bg-background"
+                className="flex w-full cursor-pointer items-center gap-3 border-b border-border p-2.5 text-left transition-colors last:border-0 hover:bg-background"
               >
                 <div className="h-10 w-10 shrink-0 overflow-hidden rounded-lg bg-background">
                   {cover ? (
@@ -387,7 +384,7 @@ function AuthButton({ onClick }: { onClick?: () => void }) {
           await supabase.auth.signOut();
           router.navigate({ to: "/", replace: true });
         }}
-        className="rounded-md bg-white/10 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-white/20"
+        className="cursor-pointer rounded-md bg-white/10 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-white/20"
       >
         Sair
       </button>

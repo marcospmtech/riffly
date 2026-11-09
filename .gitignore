@@ -19,7 +19,6 @@ dist-ssr
 # Secrets
 .env
 .env.*
-!.env.example
 
 # Wrangler / Cloudflare
 .wrangler/

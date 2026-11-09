@@ -88,7 +88,7 @@ function RecognizePage() {
         <button
           onClick={() => void start()}
           disabled={state !== "idle"}
-          className="flex h-28 w-28 items-center justify-center rounded-full bg-riffly-purple text-white transition-transform hover:scale-105 disabled:opacity-70"
+          className="flex h-28 w-28 cursor-pointer items-center justify-center rounded-full bg-riffly-purple text-white transition-transform hover:scale-105 disabled:cursor-not-allowed disabled:opacity-70"
           aria-label="Reconhecer música"
         >
           {state === "idle" ? (

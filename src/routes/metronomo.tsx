@@ -198,7 +198,7 @@ function MetronomoPage() {
             <button
               key={v}
               onClick={() => setBpm(v)}
-              className={`rounded-full px-3 py-1 text-sm font-medium transition-colors ${
+              className={`cursor-pointer rounded-full px-3 py-1 text-sm font-medium transition-colors ${
                 bpm === v
                   ? "bg-primary text-primary-foreground"
                   : "bg-background text-muted-foreground hover:text-foreground"
@@ -213,7 +213,7 @@ function MetronomoPage() {
         <div className="mb-6 flex justify-center gap-3">
           <button
             onClick={isPlaying ? stop : start}
-            className={`flex h-16 w-16 items-center justify-center rounded-full shadow-lg transition-transform hover:scale-105 ${
+            className={`flex h-16 w-16 cursor-pointer items-center justify-center rounded-full shadow-lg transition-transform hover:scale-105 ${
               isPlaying ? "bg-destructive text-destructive-foreground" : "bg-primary text-primary-foreground"
             }`}
             aria-label={isPlaying ? "Parar" : "Iniciar"}
@@ -222,7 +222,7 @@ function MetronomoPage() {
           </button>
           <button
             onClick={() => { stop(); setBpm(initialBpm); }}
-            className="flex h-16 w-16 items-center justify-center rounded-full border border-border bg-background text-foreground transition-colors hover:bg-accent"
+            className="flex h-16 w-16 cursor-pointer items-center justify-center rounded-full border border-border bg-background text-foreground transition-colors hover:bg-accent"
             aria-label="Resetar"
           >
             <RotateCcw className="h-6 w-6" />
@@ -236,12 +236,12 @@ function MetronomoPage() {
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setBeatsPerBar((v) => Math.max(1, v - 1))}
-                className="h-9 w-9 rounded-lg border border-border bg-background text-foreground hover:bg-accent"
+                className="h-9 w-9 cursor-pointer rounded-lg border border-border bg-background text-foreground transition-colors hover:bg-accent"
               >−</button>
               <span className="w-12 text-center text-lg font-semibold tabular-nums text-foreground">{beatsPerBar}</span>
               <button
                 onClick={() => setBeatsPerBar((v) => Math.min(12, v + 1))}
-                className="h-9 w-9 rounded-lg border border-border bg-background text-foreground hover:bg-accent"
+                className="h-9 w-9 cursor-pointer rounded-lg border border-border bg-background text-foreground transition-colors hover:bg-accent"
               >+</button>
             </div>
           </div>

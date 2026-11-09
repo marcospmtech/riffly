@@ -88,7 +88,7 @@ function CifraDetailPage() {
         {isAuthenticated && (
           <button
             onClick={() => favMutation.mutate()}
-            className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-sm font-medium text-foreground hover:border-riffly-purple"
+            className="inline-flex cursor-pointer items-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-sm font-medium text-foreground transition-colors hover:border-riffly-purple"
           >
             <Heart className={`h-4 w-4 ${isFav ? "fill-destructive text-destructive" : ""}`} />
             {isFav ? "Favoritado" : "Favoritar"}
@@ -99,13 +99,13 @@ function CifraDetailPage() {
       <div className="mb-6 flex flex-wrap gap-3">
         <button
           onClick={() => navigate({ to: "/metronomo", search: { bpm: song.bpm } })}
-          className="inline-flex items-center gap-2 rounded-lg bg-riffly-purple px-4 py-2.5 text-sm font-semibold text-white hover:opacity-90"
+          className="inline-flex cursor-pointer items-center gap-2 rounded-lg bg-riffly-purple px-4 py-2.5 text-sm font-semibold text-white transition-opacity hover:opacity-90"
         >
           <Metronome className="h-4 w-4" /> Metrônomo · {song.bpm} BPM
         </button>
         <button
           onClick={() => navigate({ to: "/afinador-manual", search: { tuning: song.tuning } })}
-          className="inline-flex items-center gap-2 rounded-lg border border-border bg-card px-4 py-2.5 text-sm font-semibold text-foreground hover:border-riffly-purple"
+          className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-border bg-card px-4 py-2.5 text-sm font-semibold text-foreground transition-colors hover:border-riffly-purple"
         >
           <Guitar className="h-4 w-4" /> Afinação · {song.tuning}
         </button>

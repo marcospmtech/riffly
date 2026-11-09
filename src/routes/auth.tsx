@@ -162,7 +162,7 @@ function AuthPage() {
           {mode === "login" ? "Não tem conta? " : "Já tem conta? "}
           <button
             onClick={() => setMode(mode === "login" ? "signup" : "login")}
-            className="font-medium text-primary hover:underline"
+            className="cursor-pointer font-medium text-primary transition-colors hover:underline"
           >
             {mode === "login" ? "Criar conta" : "Entrar"}
           </button>

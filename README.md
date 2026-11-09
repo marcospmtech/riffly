@@ -49,7 +49,7 @@
 
 | Layer | Technology |
 |---|---|
-| UI | React 19 + Tailwind CSS 4 + shadcn/ui components |
+| UI | React 19 + Tailwind CSS 4 + shadcn/ui components | 
 | Routing & SSR | TanStack Router + TanStack Start |
 | Build tool | Vite 8 |
 | Server build target | Nitro (production builds only — see note below) |
@@ -73,7 +73,7 @@
 bun install
 ```
 
-Create a `.env` file in the project root with the following variables (there is no `.env.example` committed — the values below reflect the current variable names in use):
+Create a `.env` or use the `.env.example` file in the project root with the following variables:
 
 ```env
 SUPABASE_PROJECT_ID=
