@@ -3,6 +3,7 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { z } from "zod";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
+import { logAudit, resolveActor } from "@/lib/audit.functions";
 
 export interface AdminUser {
   id: string;
@@ -113,6 +114,16 @@ export const createAdmin = createServerFn({ method: "POST" })
       .neq("role", "admin");
     if (roleCleanupError) throw roleCleanupError;
 
+    const actor = await resolveActor(supabaseAdmin, context.userId);
+    await logAudit(supabaseAdmin, {
+      action: "admin_created",
+      actorId: context.userId,
+      actorName: actor.name,
+      actorEmail: actor.email,
+      targetName: data.display_name,
+      targetDetail: data.email,
+    });
+
     return { ok: true, id: newUser.user.id };
   });
 
@@ -131,6 +142,22 @@ export const updateUserRole = createServerFn({ method: "POST" })
     }
 
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    // Precisa ler o cargo ANTES do upsert — depois de escrever o novo cargo
+    // não tem mais como saber qual era o anterior. rolePriority escolhe o
+    // "mais alto" caso o usuário tenha mais de uma linha em user_roles.
+    const { data: currentRoles, error: currentRolesError } = await supabaseAdmin
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", data.user_id);
+    if (currentRolesError) throw currentRolesError;
+    const oldRole =
+      currentRoles && currentRoles.length > 0
+        ? currentRoles.reduce((best, r) =>
+            rolePriority[r.role] < rolePriority[best.role] ? r : best,
+          ).role
+        : null;
+
     const { error: insertError } = await supabaseAdmin
       .from("user_roles")
       .upsert({ user_id: data.user_id, role: data.role }, { onConflict: "user_id,role" });
@@ -142,6 +169,19 @@ export const updateUserRole = createServerFn({ method: "POST" })
       .eq("user_id", data.user_id)
       .neq("role", data.role);
     if (deleteError) throw deleteError;
+
+    // Dados do usuário alvo (não do ator) para a linha do log.
+    const target = await resolveActor(supabaseAdmin, data.user_id);
+    const actor = await resolveActor(supabaseAdmin, context.userId);
+    await logAudit(supabaseAdmin, {
+      action: "role_changed",
+      actorId: context.userId,
+      actorName: actor.name,
+      actorEmail: actor.email,
+      targetName: target.name,
+      targetDetail: target.email,
+      metadata: { old_role: oldRole, new_role: data.role },
+    });
 
     return { ok: true };
   });
@@ -156,11 +196,28 @@ export const resetUserPassword = createServerFn({ method: "POST" })
 
     await requireOwner(context);
 
+    // Captura nome/e-mail do alvo antes de trocar a senha. Aqui a conta
+    // continua existindo depois (diferente do deleteUser), então dava pra
+    // buscar depois também — mas buscar antes deixa o padrão igual ao resto
+    // do arquivo e evita qualquer dúvida se um dia a ordem mudar.
+    const target = await resolveActor(supabaseAdmin, data.user_id);
+
     const newPassword = Math.random().toString(36).slice(2, 10) + "Aa1!";
     const { error } = await supabaseAdmin.auth.admin.updateUserById(data.user_id, {
       password: newPassword,
     });
     if (error) throw error;
+
+    const actor = await resolveActor(supabaseAdmin, context.userId);
+    await logAudit(supabaseAdmin, {
+      action: "user_password_reset",
+      actorId: context.userId,
+      actorName: actor.name,
+      actorEmail: actor.email,
+      targetName: target.name,
+      targetDetail: target.email,
+    });
+
     return { ok: true, password: newPassword };
   });
 
@@ -186,7 +243,23 @@ export const deleteUser = createServerFn({ method: "POST" })
       throw new Response("Cannot delete owner", { status: 400 });
     }
 
+    // Igual ao reset de senha: captura nome/e-mail ANTES de apagar, porque
+    // depois do deleteUser a conta simplesmente não existe mais em
+    // auth.users — resolveActor chamado depois retornaria tudo null.
+    const target = await resolveActor(supabaseAdmin, data.user_id);
+
     const { error } = await supabaseAdmin.auth.admin.deleteUser(data.user_id);
     if (error) throw error;
+
+    const actor = await resolveActor(supabaseAdmin, context.userId);
+    await logAudit(supabaseAdmin, {
+      action: "user_deleted",
+      actorId: context.userId,
+      actorName: actor.name,
+      actorEmail: actor.email,
+      targetName: target.name,
+      targetDetail: target.email,
+    });
+
     return { ok: true };
   });
