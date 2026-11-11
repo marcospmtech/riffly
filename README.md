@@ -2,6 +2,8 @@
 
 **Riffly** is an all-in-one web app for guitar and bass players: a chromatic tuner, a string-by-string manual tuner, a fully configurable metronome, and a searchable library of chord sheets — all in one place, so you don't need four different apps.
 
+🔗 Live at [www.riffly.app.br](https://www.riffly.app.br)
+
 ## Features
 
 - **Chromatic tuner** — listens through the microphone and shows the closest note in real time, with a needle that points left/right to tell you whether to tighten or loosen the string.
@@ -13,6 +15,7 @@
 - **Admin panel** — staff can create, edit, and delete songs (title, author, album, BPM, tuning, cover image, chord sheet image), and manage user-submitted song requests.
 - **Owner panel** — a single owner account manages every user: promote/demote roles (`owner` > `admin` > `user`), reset passwords, and delete accounts.
 - **Reports** (owner only) — a bar chart of songs added vs. songs favorited per month, for years 2026–2030 (years with no data yet just render an empty chart). Reports can be saved as a permanent snapshot (so the numbers stay even if the underlying songs/favorites are later deleted) and printed directly from the page.
+- **Audit log** (owner only) — a searchable, filterable history of administrative actions, grouped by year inside the Reports page: songs added, edited, or removed; passwords reset; accounts deleted; admins created; and roles changed (showing the previous and new role). Each entry shows who performed the action, what it was done to, and when. Search matches by user name, target name, e-mail, or user ID; a dropdown filter narrows the list down to specific action types.
 - **Auth** — email/password and Google sign-in, backed by Supabase Auth.
 
 ## Screenshots
@@ -41,9 +44,9 @@
 |---|---|
 | ![Owner panel](public/img/owner.png) | ![Add admin](public/img/add_admin.png) |
 
-| Reports |
-|---|
-| ![Monthly reports](public/img/report.png) |
+| Reports | Audit logs |
+|---|---|
+| ![Monthly reports](public/img/report.png) | ![Audit logs](public/img/logs.png) |
 
 ## Tech stack
 
