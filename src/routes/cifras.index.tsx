@@ -38,7 +38,11 @@ function CifrasPage() {
   const filtered = (songs as Song[]).filter((s) => {
     if (!q.trim()) return true;
     const t = q.toLowerCase();
-    return s.title.toLowerCase().includes(t) || s.author.toLowerCase().includes(t);
+    return (
+      s.title.toLowerCase().includes(t) ||
+      s.author.toLowerCase().includes(t) ||
+      (s.album ?? "").toLowerCase().includes(t)
+    );
   });
 
   return (
@@ -52,7 +56,7 @@ function CifrasPage() {
           type="search"
           value={q}
           onChange={(e) => setQ(e.target.value)}
-          placeholder="Buscar por título ou autor..."
+          placeholder="Buscar por título, autor ou álbum..."
           className="h-10 w-full max-w-xs rounded-full border border-input bg-background px-4 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none"
         />
       </div>

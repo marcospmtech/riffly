@@ -58,7 +58,12 @@ function AdminPage() {
 
   const q = search.trim().toLowerCase();
   const filteredSongs = q
-    ? songs.filter((s: any) => s.title.toLowerCase().includes(q) || s.author.toLowerCase().includes(q))
+    ? songs.filter(
+        (s: any) =>
+          s.title.toLowerCase().includes(q) ||
+          s.author.toLowerCase().includes(q) ||
+          (s.album ?? "").toLowerCase().includes(q),
+      )
     : songs;
 
   const openEdit = (s: any) =>
@@ -208,7 +213,7 @@ function AdminPage() {
                       type="text"
                       value={search}
                       onChange={(e) => setSearch(e.target.value)}
-                      placeholder="Buscar música..."
+                      placeholder="Buscar por título, autor ou álbum..."
                       aria-label="Buscar música"
                       className="h-9 w-full rounded-lg border border-input bg-background pl-8 pr-3 text-xs font-normal normal-case text-foreground focus:border-primary focus:outline-none"
                     />

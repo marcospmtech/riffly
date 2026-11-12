@@ -293,10 +293,18 @@ function GlobalSearch() {
   });
 
   const q = query.trim().toLowerCase();
+  // `album` pode ser null (nem toda música tem álbum cadastrado), por isso o
+  // `?? ""` antes do toLowerCase — sem isso, a primeira música sem álbum
+  // quebraria a busca inteira com um erro de "null não tem toLowerCase".
   const suggestions =
     q.length >= 2
       ? (songs as any[])
-          .filter((s) => s.title.toLowerCase().includes(q) || s.author.toLowerCase().includes(q))
+          .filter(
+            (s) =>
+              s.title.toLowerCase().includes(q) ||
+              s.author.toLowerCase().includes(q) ||
+              (s.album ?? "").toLowerCase().includes(q),
+          )
           .slice(0, 6)
       : [];
 
