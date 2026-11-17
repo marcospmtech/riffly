@@ -23,7 +23,7 @@ export const Route = createFileRoute("/auth")({
 function AuthPage() {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
-  const [mode, setMode] = useState<"login" | "signup">("login");
+  const [mode, setMode] = useState<"login" | "signup" | "forgot">("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [displayName, setDisplayName] = useState("");
@@ -78,21 +78,70 @@ function AuthPage() {
     }
   }
 
+  async function handleForgotPassword(e: React.FormEvent) {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/resetar-senha`,
+      });
+      if (error) throw error;
+      // Mensagem genérica de propósito: não confirmamos nem negamos se o
+      // e-mail existe na base. Se a mensagem mudasse conforme o e-mail
+      // existe ou não, alguém poderia usar esse formulário pra descobrir
+      // quais e-mails estão cadastrados (user enumeration).
+      toast.success("Se esse e-mail existir, enviamos um link de recuperação.");
+      setMode("login");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Erro ao solicitar recuperação");
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
     <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center px-4 py-8">
       <div className="w-full max-w-md rounded-2xl border border-border bg-card p-6 shadow-riffly sm:p-8">
         <div className="mb-6 flex flex-col items-center gap-3">
           <img src={logoUrl} alt="Riffly" className="h-16 w-16" />
           <h1 className="text-2xl font-bold text-foreground">
-            {mode === "login" ? "Entrar" : "Criar conta"}
+            {mode === "login" ? "Entrar" : mode === "signup" ? "Criar conta" : "Recuperar senha"}
           </h1>
           <p className="text-sm text-muted-foreground">
             {mode === "login"
               ? "Acesse suas músicas favoritas e recentes"
-              : "Crie sua conta para começar"}
+              : mode === "signup"
+                ? "Crie sua conta para começar"
+                : "Informe seu e-mail para receber o link de recuperação"}
           </p>
         </div>
 
+        {mode === "forgot" ? (
+        <form onSubmit={handleForgotPassword} className="space-y-4">
+          <div>
+            <label className="mb-1.5 block text-sm font-medium text-foreground">E-mail</label>
+            <input
+              type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="h-11 w-full rounded-lg border border-input bg-background px-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+              placeholder="voce@email.com"
+            />
+          </div>
+          <Button type="submit" disabled={loading} className="h-11 w-full">
+            {loading ? "Enviando..." : "Enviar link de recuperação"}
+          </Button>
+          <button
+            type="button"
+            onClick={() => setMode("login")}
+            className="w-full cursor-pointer text-center text-sm text-muted-foreground transition-colors hover:text-foreground hover:underline"
+          >
+            ← Voltar para o login
+          </button>
+        </form>
+        ) : (
+        <>
         <form onSubmit={handleSubmit} className="space-y-4">
           {mode === "signup" && (
             <div>
@@ -130,6 +179,15 @@ function AuthPage() {
               className="h-11 w-full rounded-lg border border-input bg-background px-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
               placeholder="••••••••"
             />
+            {mode === "login" && (
+              <button
+                type="button"
+                onClick={() => setMode("forgot")}
+                className="mt-1.5 cursor-pointer text-xs font-medium text-primary hover:underline"
+              >
+                Esqueci minha senha
+              </button>
+            )}
           </div>
 
           <Button
@@ -167,6 +225,8 @@ function AuthPage() {
             {mode === "login" ? "Criar conta" : "Entrar"}
           </button>
         </p>
+        </>
+        )}
 
         <div className="mt-6 text-center">
           <Link to="/" className="text-sm text-muted-foreground hover:text-foreground hover:underline">

@@ -3,6 +3,7 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { z } from "zod";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
+import { logAudit, resolveActor } from "@/lib/audit.functions";
 
 export interface SongRequest {
   id: string;
@@ -73,7 +74,28 @@ export const deleteSongRequest = createServerFn({ method: "POST" })
   .inputValidator((input) => idSchema.parse(input))
   .handler(async ({ data, context }) => {
     await requireStaff(context);
-    const { error } = await context.supabase.from("song_requests").delete().eq("id", data.id);
+
+    // .select() no delete captura título/autor do pedido na mesma operação
+    // que apaga a linha (mesmo padrão de deleteSong em songs.functions.ts) —
+    // depois de apagado não existe mais como buscar esses dados separado.
+    const { data: deleted, error } = await context.supabase
+      .from("song_requests")
+      .delete()
+      .eq("id", data.id)
+      .select()
+      .maybeSingle();
     if (error) throw error;
+
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const actor = await resolveActor(supabaseAdmin, context.userId);
+    await logAudit(supabaseAdmin, {
+      action: "song_request_deleted",
+      actorId: context.userId,
+      actorName: actor.name,
+      actorEmail: actor.email,
+      targetName: deleted?.title ?? null,
+      targetDetail: deleted?.author ?? null,
+    });
+
     return { ok: true };
   });

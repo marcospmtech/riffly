@@ -50,6 +50,110 @@ export type Database = {
         }
         Relationships: []
       }
+      comments: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          parent_id: string | null
+          song_id: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          parent_id?: string | null
+          song_id: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          parent_id?: string | null
+          song_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "comments_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "comments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "comments_song_id_fkey"
+            columns: ["song_id"]
+            isOneToOne: false
+            referencedRelation: "songs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      comment_votes: {
+        Row: {
+          comment_id: string
+          created_at: string
+          id: string
+          user_id: string
+          vote: number
+        }
+        Insert: {
+          comment_id: string
+          created_at?: string
+          id?: string
+          user_id: string
+          vote: number
+        }
+        Update: {
+          comment_id?: string
+          created_at?: string
+          id?: string
+          user_id?: string
+          vote?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "comment_votes_comment_id_fkey"
+            columns: ["comment_id"]
+            isOneToOne: false
+            referencedRelation: "comments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      punishments: {
+        Row: {
+          admin_id: string | null
+          created_at: string
+          expires_at: string | null
+          id: string
+          proof_path: string | null
+          reason: string
+          user_id: string
+        }
+        Insert: {
+          admin_id?: string | null
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          proof_path?: string | null
+          reason: string
+          user_id: string
+        }
+        Update: {
+          admin_id?: string | null
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          proof_path?: string | null
+          reason?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       favorites: {
         Row: {
           created_at: string
@@ -81,27 +185,50 @@ export type Database = {
       }
       profiles: {
         Row: {
+          avatar_path: string | null
+          bio: string | null
           created_at: string
           display_name: string | null
+          favorite_album: string | null
+          favorite_author: string | null
+          favorite_song_id: string | null
           id: string
           updated_at: string
           user_id: string
         }
         Insert: {
+          avatar_path?: string | null
+          bio?: string | null
           created_at?: string
           display_name?: string | null
+          favorite_album?: string | null
+          favorite_author?: string | null
+          favorite_song_id?: string | null
           id?: string
           updated_at?: string
           user_id: string
         }
         Update: {
+          avatar_path?: string | null
+          bio?: string | null
           created_at?: string
           display_name?: string | null
+          favorite_album?: string | null
+          favorite_author?: string | null
+          favorite_song_id?: string | null
           id?: string
           updated_at?: string
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "profiles_favorite_song_id_fkey"
+            columns: ["favorite_song_id"]
+            isOneToOne: false
+            referencedRelation: "songs"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       recents: {
         Row: {

@@ -60,6 +60,36 @@ export const listSongs = createServerFn({ method: "GET" }).handler(async () => {
   return data ?? [];
 });
 
+export interface CatalogFacets {
+  authors: string[];
+  albums: string[];
+}
+
+// Usado pelos seletores de "autor/banda favorita" e "álbum favorito" do
+// perfil. Não existe tabela separada de banda/álbum no catálogo — authors e
+// albums são só os valores distintos das colunas songs.author/songs.album.
+// Como listSongs() já traz a tabela inteira sem paginação, deduplicar em JS
+// aqui é consistente com o resto do arquivo.
+export const listCatalogFacets = createServerFn({ method: "GET" }).handler(
+  async (): Promise<CatalogFacets> => {
+    const supabasePublic = await createPublicClient();
+    const { data, error } = await supabasePublic.from("songs").select("author, album");
+    if (error) throw error;
+
+    const authors = new Set<string>();
+    const albums = new Set<string>();
+    for (const row of data ?? []) {
+      if (row.author) authors.add(row.author);
+      if (row.album) albums.add(row.album);
+    }
+
+    return {
+      authors: [...authors].sort((a, b) => a.localeCompare(b)),
+      albums: [...albums].sort((a, b) => a.localeCompare(b)),
+    };
+  },
+);
+
 export const getSong = createServerFn({ method: "GET" })
   .inputValidator((input) => songIdSchema.parse(input))
   .handler(async ({ data }) => {

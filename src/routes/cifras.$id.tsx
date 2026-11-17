@@ -6,6 +6,7 @@ import { getSong } from "@/lib/songs.functions";
 import { addFavorite, removeFavorite, addRecent, listFavorites } from "@/lib/favorites.functions";
 import { useAuth } from "@/hooks/use-auth";
 import { getSongImage, getSongChordPaths } from "@/components/song-card";
+import { CommentsSection } from "@/components/comments-section";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/cifras/$id")({
@@ -152,6 +153,11 @@ function CifraDetailPage() {
           )}
         </div>
       </div>
+
+      {/* Fora das colunas de propósito: assim no mobile ela sempre cai depois
+          do vídeo (as colunas empilham) e no desktop ocupa a largura cheia
+          abaixo das duas — em vez de ficar espremida só na coluna do vídeo. */}
+      <CommentsSection songId={id} />
     </div>
   );
 }

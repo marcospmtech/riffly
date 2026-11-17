@@ -16,15 +16,22 @@ import { Route as AfinadorManualRouteImport } from './routes/afinador-manual'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as CifrasRouteImport } from './routes/cifras'
 import { Route as MetronomoRouteImport } from './routes/metronomo'
+import { Route as PrivacidadeRouteImport } from './routes/privacidade'
 import { Route as ReconhecerRouteImport } from './routes/reconhecer'
+import { Route as ResetarSenhaRouteImport } from './routes/resetar-senha'
+import { Route as TermosRouteImport } from './routes/termos'
+import { Route as UsuariosRouteImport } from './routes/usuarios'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedDonoRouteImport } from './routes/_authenticated/dono'
 import { Route as AuthenticatedFavoritosRouteImport } from './routes/_authenticated/favoritos'
 import { Route as AuthenticatedRecentesRouteImport } from './routes/_authenticated/recentes'
 import { Route as AuthenticatedRelatoriosRouteImport } from './routes/_authenticated/relatorios'
+import { Route as ApiAvatarRouteImport } from './routes/api/avatar'
 import { Route as ApiImgRouteImport } from './routes/api/img'
+import { Route as ApiProofRouteImport } from './routes/api/proof'
 import { Route as CifrasIndexRouteImport } from './routes/cifras.index'
 import { Route as CifrasIdRouteImport } from './routes/cifras.$id'
+import { Route as PerfilIdRouteImport } from './routes/perfil.$id'
 import { Route as AuthenticatedAdminIdRouteImport } from './routes/_authenticated/admin.$id'
 import { Route as ApiPublicImgSplatRouteImport } from './routes/api/public/img/$'
 
@@ -62,9 +69,29 @@ const MetronomoRoute = MetronomoRouteImport.update({
   path: '/metronomo',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PrivacidadeRoute = PrivacidadeRouteImport.update({
+  id: '/privacidade',
+  path: '/privacidade',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ReconhecerRoute = ReconhecerRouteImport.update({
   id: '/reconhecer',
   path: '/reconhecer',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetarSenhaRoute = ResetarSenhaRouteImport.update({
+  id: '/resetar-senha',
+  path: '/resetar-senha',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TermosRoute = TermosRouteImport.update({
+  id: '/termos',
+  path: '/termos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const UsuariosRoute = UsuariosRouteImport.update({
+  id: '/usuarios',
+  path: '/usuarios',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
@@ -92,9 +119,19 @@ const AuthenticatedRelatoriosRoute = AuthenticatedRelatoriosRouteImport.update({
   path: '/relatorios',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const ApiAvatarRoute = ApiAvatarRouteImport.update({
+  id: '/api/avatar',
+  path: '/api/avatar',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiImgRoute = ApiImgRouteImport.update({
   id: '/api/img',
   path: '/api/img',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiProofRoute = ApiProofRouteImport.update({
+  id: '/api/proof',
+  path: '/api/proof',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CifrasIndexRoute = CifrasIndexRouteImport.update({
@@ -106,6 +143,11 @@ const CifrasIdRoute = CifrasIdRouteImport.update({
   id: '/$id',
   path: '/$id',
   getParentRoute: () => CifrasRoute,
+} as any)
+const PerfilIdRoute = PerfilIdRouteImport.update({
+  id: '/perfil/$id',
+  path: '/perfil/$id',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedAdminIdRoute = AuthenticatedAdminIdRouteImport.update({
   id: '/$id',
@@ -125,14 +167,21 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/cifras': typeof CifrasRouteWithChildren
   '/metronomo': typeof MetronomoRoute
+  '/privacidade': typeof PrivacidadeRoute
   '/reconhecer': typeof ReconhecerRoute
+  '/resetar-senha': typeof ResetarSenhaRoute
+  '/termos': typeof TermosRoute
+  '/usuarios': typeof UsuariosRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/dono': typeof AuthenticatedDonoRoute
   '/favoritos': typeof AuthenticatedFavoritosRoute
   '/recentes': typeof AuthenticatedRecentesRoute
   '/relatorios': typeof AuthenticatedRelatoriosRoute
+  '/api/avatar': typeof ApiAvatarRoute
   '/api/img': typeof ApiImgRoute
+  '/api/proof': typeof ApiProofRoute
   '/cifras/$id': typeof CifrasIdRoute
+  '/perfil/$id': typeof PerfilIdRoute
   '/cifras/': typeof CifrasIndexRoute
   '/admin/$id': typeof AuthenticatedAdminIdRoute
   '/api/public/img/$': typeof ApiPublicImgSplatRoute
@@ -143,14 +192,21 @@ export interface FileRoutesByTo {
   '/afinador-manual': typeof AfinadorManualRoute
   '/auth': typeof AuthRoute
   '/metronomo': typeof MetronomoRoute
+  '/privacidade': typeof PrivacidadeRoute
   '/reconhecer': typeof ReconhecerRoute
+  '/resetar-senha': typeof ResetarSenhaRoute
+  '/termos': typeof TermosRoute
+  '/usuarios': typeof UsuariosRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/dono': typeof AuthenticatedDonoRoute
   '/favoritos': typeof AuthenticatedFavoritosRoute
   '/recentes': typeof AuthenticatedRecentesRoute
   '/relatorios': typeof AuthenticatedRelatoriosRoute
+  '/api/avatar': typeof ApiAvatarRoute
   '/api/img': typeof ApiImgRoute
+  '/api/proof': typeof ApiProofRoute
   '/cifras/$id': typeof CifrasIdRoute
+  '/perfil/$id': typeof PerfilIdRoute
   '/cifras': typeof CifrasIndexRoute
   '/admin/$id': typeof AuthenticatedAdminIdRoute
   '/api/public/img/$': typeof ApiPublicImgSplatRoute
@@ -164,14 +220,21 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/cifras': typeof CifrasRouteWithChildren
   '/metronomo': typeof MetronomoRoute
+  '/privacidade': typeof PrivacidadeRoute
   '/reconhecer': typeof ReconhecerRoute
+  '/resetar-senha': typeof ResetarSenhaRoute
+  '/termos': typeof TermosRoute
+  '/usuarios': typeof UsuariosRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/_authenticated/dono': typeof AuthenticatedDonoRoute
   '/_authenticated/favoritos': typeof AuthenticatedFavoritosRoute
   '/_authenticated/recentes': typeof AuthenticatedRecentesRoute
   '/_authenticated/relatorios': typeof AuthenticatedRelatoriosRoute
+  '/api/avatar': typeof ApiAvatarRoute
   '/api/img': typeof ApiImgRoute
+  '/api/proof': typeof ApiProofRoute
   '/cifras/$id': typeof CifrasIdRoute
+  '/perfil/$id': typeof PerfilIdRoute
   '/cifras/': typeof CifrasIndexRoute
   '/_authenticated/admin/$id': typeof AuthenticatedAdminIdRoute
   '/api/public/img/$': typeof ApiPublicImgSplatRoute
@@ -185,14 +248,21 @@ export interface FileRouteTypes {
     | '/auth'
     | '/cifras'
     | '/metronomo'
+    | '/privacidade'
     | '/reconhecer'
+    | '/resetar-senha'
+    | '/termos'
+    | '/usuarios'
     | '/admin'
     | '/dono'
     | '/favoritos'
     | '/recentes'
     | '/relatorios'
+    | '/api/avatar'
     | '/api/img'
+    | '/api/proof'
     | '/cifras/$id'
+    | '/perfil/$id'
     | '/cifras/'
     | '/admin/$id'
     | '/api/public/img/$'
@@ -203,14 +273,21 @@ export interface FileRouteTypes {
     | '/afinador-manual'
     | '/auth'
     | '/metronomo'
+    | '/privacidade'
     | '/reconhecer'
+    | '/resetar-senha'
+    | '/termos'
+    | '/usuarios'
     | '/admin'
     | '/dono'
     | '/favoritos'
     | '/recentes'
     | '/relatorios'
+    | '/api/avatar'
     | '/api/img'
+    | '/api/proof'
     | '/cifras/$id'
+    | '/perfil/$id'
     | '/cifras'
     | '/admin/$id'
     | '/api/public/img/$'
@@ -223,14 +300,21 @@ export interface FileRouteTypes {
     | '/auth'
     | '/cifras'
     | '/metronomo'
+    | '/privacidade'
     | '/reconhecer'
+    | '/resetar-senha'
+    | '/termos'
+    | '/usuarios'
     | '/_authenticated/admin'
     | '/_authenticated/dono'
     | '/_authenticated/favoritos'
     | '/_authenticated/recentes'
     | '/_authenticated/relatorios'
+    | '/api/avatar'
     | '/api/img'
+    | '/api/proof'
     | '/cifras/$id'
+    | '/perfil/$id'
     | '/cifras/'
     | '/_authenticated/admin/$id'
     | '/api/public/img/$'
@@ -244,8 +328,15 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   CifrasRoute: typeof CifrasRouteWithChildren
   MetronomoRoute: typeof MetronomoRoute
+  PrivacidadeRoute: typeof PrivacidadeRoute
   ReconhecerRoute: typeof ReconhecerRoute
+  ResetarSenhaRoute: typeof ResetarSenhaRoute
+  TermosRoute: typeof TermosRoute
+  UsuariosRoute: typeof UsuariosRoute
+  ApiAvatarRoute: typeof ApiAvatarRoute
   ApiImgRoute: typeof ApiImgRoute
+  ApiProofRoute: typeof ApiProofRoute
+  PerfilIdRoute: typeof PerfilIdRoute
   ApiPublicImgSplatRoute: typeof ApiPublicImgSplatRoute
 }
 
@@ -300,11 +391,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MetronomoRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/privacidade': {
+      id: '/privacidade'
+      path: '/privacidade'
+      fullPath: '/privacidade'
+      preLoaderRoute: typeof PrivacidadeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/reconhecer': {
       id: '/reconhecer'
       path: '/reconhecer'
       fullPath: '/reconhecer'
       preLoaderRoute: typeof ReconhecerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/resetar-senha': {
+      id: '/resetar-senha'
+      path: '/resetar-senha'
+      fullPath: '/resetar-senha'
+      preLoaderRoute: typeof ResetarSenhaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/termos': {
+      id: '/termos'
+      path: '/termos'
+      fullPath: '/termos'
+      preLoaderRoute: typeof TermosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/usuarios': {
+      id: '/usuarios'
+      path: '/usuarios'
+      fullPath: '/usuarios'
+      preLoaderRoute: typeof UsuariosRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/admin': {
@@ -342,11 +461,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedRelatoriosRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/api/avatar': {
+      id: '/api/avatar'
+      path: '/api/avatar'
+      fullPath: '/api/avatar'
+      preLoaderRoute: typeof ApiAvatarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/img': {
       id: '/api/img'
       path: '/api/img'
       fullPath: '/api/img'
       preLoaderRoute: typeof ApiImgRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/proof': {
+      id: '/api/proof'
+      path: '/api/proof'
+      fullPath: '/api/proof'
+      preLoaderRoute: typeof ApiProofRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/cifras/': {
@@ -362,6 +495,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/cifras/$id'
       preLoaderRoute: typeof CifrasIdRouteImport
       parentRoute: typeof CifrasRoute
+    }
+    '/perfil/$id': {
+      id: '/perfil/$id'
+      path: '/perfil/$id'
+      fullPath: '/perfil/$id'
+      preLoaderRoute: typeof PerfilIdRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_authenticated/admin/$id': {
       id: '/_authenticated/admin/$id'
@@ -431,8 +571,15 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   CifrasRoute: CifrasRouteWithChildren,
   MetronomoRoute: MetronomoRoute,
+  PrivacidadeRoute: PrivacidadeRoute,
   ReconhecerRoute: ReconhecerRoute,
+  ResetarSenhaRoute: ResetarSenhaRoute,
+  TermosRoute: TermosRoute,
+  UsuariosRoute: UsuariosRoute,
+  ApiAvatarRoute: ApiAvatarRoute,
   ApiImgRoute: ApiImgRoute,
+  ApiProofRoute: ApiProofRoute,
+  PerfilIdRoute: PerfilIdRoute,
   ApiPublicImgSplatRoute: ApiPublicImgSplatRoute,
 }
 export const routeTree = rootRouteImport

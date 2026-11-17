@@ -210,7 +210,7 @@ function RelatoriosPage() {
   );
 }
 
-function LogsTab({ year, enabled }: { year: number; enabled: boolean }) {
+export function LogsTab({ year, enabled }: { year: number; enabled: boolean }) {
   // `search` é o que aparece no input, atualizado a cada tecla.
   // `debouncedSearch` é o que realmente vai para a query — só muda 300ms
   // depois que o usuário parar de digitar. Sem esse intervalo, cada tecla

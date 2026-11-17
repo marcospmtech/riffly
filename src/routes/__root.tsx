@@ -10,6 +10,7 @@ import {
 import { useState, type ReactNode } from "react";
 import { Toaster } from "@/components/ui/sonner";
 import { Button } from "@/components/ui/button";
+import { Footer } from "@/components/footer";
 import { Menu, Search, X, Music2 } from "lucide-react";
 
 import appCss from "../styles.css?url";
@@ -17,7 +18,10 @@ import { AuthProvider, useAuth } from "@/hooks/use-auth";
 import { useRole } from "@/hooks/use-role";
 import { supabase } from "@/integrations/supabase/client";
 import { listSongs } from "@/lib/songs.functions";
+import { getPublicProfile } from "@/lib/profile.functions";
 import { getSongImage } from "@/components/song-card";
+import { ProfileAvatar } from "@/components/avatar";
+import { PunishmentBanner } from "@/components/punishment-banner";
 import logoUrl from "@/assets/riffly-logo.png";
 
 function NotFoundComponent() {
@@ -119,10 +123,14 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <div className="flex min-h-screen flex-col bg-background">
-          <Header />
+          <div className="sticky top-0 z-50">
+            <PunishmentBanner />
+            <Header />
+          </div>
           <main className="flex-1">
             <Outlet />
           </main>
+          <Footer />
         </div>
         <Toaster richColors position="top-center" />
       </AuthProvider>
@@ -148,7 +156,7 @@ function Header() {
   ];
 
   return (
-    <header className="sticky top-0 z-50 bg-riffly-purple shadow-riffly">
+    <header className="bg-riffly-purple shadow-riffly">
       <div className="mx-auto flex h-16 max-w-7xl items-center gap-4 px-4 sm:px-6 lg:px-8">
         <Link to="/" className="flex shrink-0 items-center gap-2">
           <img src={logoUrl} alt="Riffly" className="h-10 w-10" />
@@ -380,22 +388,40 @@ function AuthButton({ onClick }: { onClick?: () => void }) {
   const { user, isLoading } = useAuth();
   const router = useRouter();
 
+  // Mesmo endpoint público usado na página de perfil — não existe um
+  // "getMyProfile" separado porque o perfil já é público por natureza; só
+  // reaproveitamos a consulta aqui pra pegar a foto/nome pro botão do header.
+  const { data: profile } = useQuery({
+    queryKey: ["profile", user?.id],
+    queryFn: () => getPublicProfile({ data: { user_id: user!.id } }),
+    enabled: !!user,
+  });
+
   if (isLoading) {
     return <div className="h-9 w-20 animate-pulse rounded-md bg-white/20" />;
   }
 
   if (user) {
     return (
-      <button
-        onClick={async () => {
-          onClick?.();
-          await supabase.auth.signOut();
-          router.navigate({ to: "/", replace: true });
-        }}
-        className="cursor-pointer rounded-md bg-white/10 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-white/20"
-      >
-        Sair
-      </button>
+      <div className="flex items-center gap-2">
+        <Link to="/perfil/$id" params={{ id: user.id }} onClick={onClick} aria-label="Meu perfil">
+          <ProfileAvatar
+            avatarPath={profile?.avatar_path}
+            alt={profile?.display_name ?? "Meu perfil"}
+            size="sm"
+          />
+        </Link>
+        <button
+          onClick={async () => {
+            onClick?.();
+            await supabase.auth.signOut();
+            router.navigate({ to: "/", replace: true });
+          }}
+          className="cursor-pointer rounded-md bg-white/10 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-white/20"
+        >
+          Sair
+        </button>
+      </div>
     );
   }
 

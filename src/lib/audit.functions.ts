@@ -28,6 +28,17 @@ export const AUDIT_ACTIONS = [
   "user_password_reset",
   "admin_created",
   "role_changed",
+  // Usuário redefiniu a própria senha pelo link de "esqueci minha senha"
+  // (diferente de "user_password_reset", que é o owner resetando a senha de
+  // outra pessoa).
+  "password_self_reset",
+  // Staff (admin/owner) removendo um pedido de música da fila.
+  "song_request_deleted",
+  // Moderação de comentários.
+  "comment_deleted",
+  "user_punished",
+  "punishment_updated",
+  "punishment_removed",
 ] as const;
 
 export type AuditAction = (typeof AUDIT_ACTIONS)[number];
@@ -43,6 +54,12 @@ export const AUDIT_ACTION_LABELS: Record<AuditAction, string> = {
   user_password_reset: "Senha alterada",
   admin_created: "Administrador criado",
   role_changed: "Cargo modificado",
+  password_self_reset: "Senha redefinida pelo usuário",
+  song_request_deleted: "Pedido de música removido",
+  comment_deleted: "Comentário removido",
+  user_punished: "Usuário punido",
+  punishment_updated: "Punição alterada",
+  punishment_removed: "Punição removida",
 };
 
 interface LogAuditParams {
