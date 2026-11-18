@@ -1,3 +1,4 @@
+// Root route: layout global (banner de punição, header, footer), busca global, botão de login/perfil.
 import { QueryClient, QueryClientProvider, useQuery } from "@tanstack/react-query";
 import {
   Outlet,
@@ -301,9 +302,7 @@ function GlobalSearch() {
   });
 
   const q = query.trim().toLowerCase();
-  // `album` pode ser null (nem toda música tem álbum cadastrado), por isso o
-  // `?? ""` antes do toLowerCase — sem isso, a primeira música sem álbum
-  // quebraria a busca inteira com um erro de "null não tem toLowerCase".
+  // album pode ser null; "?? ''" evita erro no toLowerCase.
   const suggestions =
     q.length >= 2
       ? (songs as any[])
@@ -388,9 +387,7 @@ function AuthButton({ onClick }: { onClick?: () => void }) {
   const { user, isLoading } = useAuth();
   const router = useRouter();
 
-  // Mesmo endpoint público usado na página de perfil — não existe um
-  // "getMyProfile" separado porque o perfil já é público por natureza; só
-  // reaproveitamos a consulta aqui pra pegar a foto/nome pro botão do header.
+  // Mesmo endpoint público da página de perfil, só para pegar foto/nome do header.
   const { data: profile } = useQuery({
     queryKey: ["profile", user?.id],
     queryFn: () => getPublicProfile({ data: { user_id: user!.id } }),

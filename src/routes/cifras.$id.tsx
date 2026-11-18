@@ -1,3 +1,4 @@
+// Página de uma música: cifra, vídeo, atalhos de metrônomo/afinador, favoritar e comentários.
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient, useSuspenseQuery, queryOptions } from "@tanstack/react-query";
 import { useEffect } from "react";
@@ -154,9 +155,7 @@ function CifraDetailPage() {
         </div>
       </div>
 
-      {/* Fora das colunas de propósito: assim no mobile ela sempre cai depois
-          do vídeo (as colunas empilham) e no desktop ocupa a largura cheia
-          abaixo das duas — em vez de ficar espremida só na coluna do vídeo. */}
+      {/* Fora das colunas: cai depois do vídeo no mobile; largura cheia no desktop. */}
       <CommentsSection songId={id} />
     </div>
   );

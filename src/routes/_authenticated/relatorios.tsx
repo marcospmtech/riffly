@@ -1,3 +1,4 @@
+// Página de Relatórios (owner only): gráfico mensal de músicas/favoritos e aba de Logs de auditoria.
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";

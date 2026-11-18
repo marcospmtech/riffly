@@ -1,3 +1,4 @@
+// Mesma coisa que /api/img, mas com o path no segmento da URL em vez de query string.
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/api/public/img/$")({

@@ -1,3 +1,4 @@
+// Página de autenticação: login, cadastro, Google e "esqueci minha senha".
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -70,8 +71,7 @@ function AuthPage() {
         },
       });
       if (error) throw error;
-      // Em caso de sucesso o Supabase redireciona a página para o Google,
-      // então normalmente não chega a executar o código daqui pra baixo.
+      // Sucesso redireciona para o Google; o resto do código não executa.
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Erro ao entrar com Google");
       setLoading(false);
@@ -86,10 +86,7 @@ function AuthPage() {
         redirectTo: `${window.location.origin}/resetar-senha`,
       });
       if (error) throw error;
-      // Mensagem genérica de propósito: não confirmamos nem negamos se o
-      // e-mail existe na base. Se a mensagem mudasse conforme o e-mail
-      // existe ou não, alguém poderia usar esse formulário pra descobrir
-      // quais e-mails estão cadastrados (user enumeration).
+      // Mensagem genérica de propósito: evita confirmar se o e-mail existe (user enumeration).
       toast.success("Se esse e-mail existir, enviamos um link de recuperação.");
       setMode("login");
     } catch (err) {

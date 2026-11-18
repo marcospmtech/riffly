@@ -1,3 +1,4 @@
+// Página inicial: ferramentas, favoritos/recentes (se logado) e amostra do catálogo.
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { queryOptions } from "@tanstack/react-query";

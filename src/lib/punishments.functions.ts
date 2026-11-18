@@ -1,3 +1,4 @@
+// Server functions de punições (owner only): listar ativas, editar duração, remover.
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { z } from "zod";
@@ -29,9 +30,7 @@ export interface PunishmentRow {
   created_at: string;
 }
 
-// Só o dono vê essa tela (igual relatórios/logs) — motivo e prova de uma
-// punição não são informações que um admin comum precisa enxergar sobre
-// ações de outros admins.
+// Só o dono acessa (motivo/prova de punição não são para admins comuns).
 export const listActivePunishments = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }): Promise<PunishmentRow[]> => {
@@ -68,10 +67,7 @@ export const listActivePunishments = createServerFn({ method: "GET" })
 
 const updateSchema = z.object({
   id: z.string().uuid(),
-  // Mesma regra de punishUser: sempre um valor ABSOLUTO (não delta). O front
-  // calcula "adicionar/remover minutos" a partir do tempo restante atual e
-  // manda o total novo aqui — mais simples e sem ambiguidade de fuso/relógio
-  // do que um "+10 minutos" calculado no servidor.
+  // Valor absoluto de minutos (não delta) — o front calcula a partir do tempo restante atual.
   duration: z.union([z.literal("infinity"), z.number().int().min(1)]),
 });
 

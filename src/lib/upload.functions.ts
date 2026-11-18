@@ -1,3 +1,4 @@
+// Upload de imagem de cifra/capa para o bucket chord-images (staff only).
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { z } from "zod";

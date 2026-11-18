@@ -1,3 +1,4 @@
+// Modal de edição de perfil: nome, bio, avatar e os 3 favoritos (música/autor/álbum).
 import { useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { X, Camera, Trash2 } from "lucide-react";
@@ -10,9 +11,7 @@ import { updateMyProfile, uploadAvatar, removeAvatar, type PublicProfile } from 
 
 type Picker = "song" | "author" | "album" | null;
 
-// Tipos aceitos espelham exatamente o enum validado no server (uploadAvatar,
-// em profile.functions.ts) — mudar um sem o outro deixa a mensagem de erro
-// no cliente desalinhada com o que o servidor realmente aceita.
+// Espelha o enum validado no server (uploadAvatar).
 const ACCEPTED_TYPES = ["image/png", "image/jpeg", "image/webp"];
 
 export function EditProfileDialog({
@@ -102,8 +101,7 @@ export function EditProfileDialog({
 
     const reader = new FileReader();
     reader.onload = () => {
-      // reader.result é "data:image/png;base64,AAAA..." — precisamos só da
-      // parte depois da vírgula, que é o que o server function espera.
+      // Pega só a parte base64 depois da vírgula.
       const base64 = String(reader.result).split(",")[1] ?? "";
       avatarMutation.mutate({ content_type: file.type, data_base64: base64 });
     };

@@ -1,3 +1,4 @@
+// Reconhecimento de música via ACRCloud a partir de áudio gravado; tenta casar com o catálogo local.
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 

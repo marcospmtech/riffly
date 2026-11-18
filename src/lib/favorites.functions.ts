@@ -1,3 +1,4 @@
+// Server functions de favoritos e recentes (adicionar/remover/listar).
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { z } from "zod";

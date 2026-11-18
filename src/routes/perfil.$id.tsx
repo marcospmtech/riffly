@@ -1,3 +1,4 @@
+// Página de perfil público: dados do usuário, favoritos clicáveis e edição (se for o próprio perfil).
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useSuspenseQuery, queryOptions, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
@@ -10,8 +11,7 @@ import { getSongImage } from "@/components/song-card";
 import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/perfil/$id")({
-  // Fora de /_authenticated de propósito: perfil é público, tipo Instagram —
-  // visitante não logado também pode ver (só não pode editar).
+  // Pública, fora de /_authenticated.
   loader: ({ context, params }) => context.queryClient.ensureQueryData(profileQueryOpts(params.id)),
   head: () => ({
     meta: [{ title: "Perfil — Riffly" }],

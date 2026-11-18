@@ -1,3 +1,4 @@
+// Metrônomo configurável: BPM, beats por compasso, subdivisão e volume.
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Play, Square, RotateCcw } from "lucide-react";

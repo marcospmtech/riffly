@@ -1,3 +1,4 @@
+// Rota que serve imagens de cifra/capa do bucket chord-images (por query ?path=).
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/api/img")({

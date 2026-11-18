@@ -1,3 +1,4 @@
+// Painel do administrador (staff): CRUD de músicas, upload de imagens e pedidos de música.
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";

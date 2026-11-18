@@ -1,12 +1,11 @@
+// Server functions do relatório mensal (owner only): cálculo ao vivo ou snapshot salvo.
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { z } from "zod";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
 
-// Mesma checagem usada em admin.functions.ts — mantida local porque o padrão
-// do projeto é duplicar esse guard em cada arquivo de server functions
-// (veja songs.functions.ts), em vez de compartilhar um helper.
+// Guard duplicado em cada arquivo de server functions (padrão do projeto).
 async function requireOwner(context: {
   supabase: SupabaseClient<Database>;
   userId: string;
@@ -90,9 +89,7 @@ export const getMonthlyReport = createServerFn({ method: "GET" })
 
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    // Snapshot salvo tem prioridade: se existe, o relatório é considerado
-    // "congelado" e não deve recalcular a partir de songs/favorites, que
-    // podem ter mudado ou sido apagados desde então.
+    // Snapshot salvo tem prioridade sobre o cálculo ao vivo.
     const { data: snapshot, error: snapshotError } = await supabaseAdmin
       .from("report_snapshots")
       .select("rows, updated_at")

@@ -1,3 +1,4 @@
+// Card de música (lista) e card de ferramenta (home), mais helpers de imagem de capa/cifra.
 import { Link } from "@tanstack/react-router";
 import { Music2, Guitar, Metronome, Heart } from "lucide-react";
 

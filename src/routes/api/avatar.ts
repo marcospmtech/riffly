@@ -1,3 +1,4 @@
+// Rota que serve as fotos de avatar do bucket `avatars`.
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/api/avatar")({
@@ -19,10 +20,7 @@ export const Route = createFileRoute("/api/avatar")({
         return new Response(await data.arrayBuffer(), {
           headers: {
             "Content-Type": data.type || "image/png",
-            // Diferente de /api/img, esse cache não é "immutable": o mesmo
-            // path (userId.ext) é reaproveitado quando a pessoa troca de
-            // foto (upsert), então o navegador precisa checar de novo em
-            // vez de confiar pra sempre no primeiro avatar que baixou.
+            // Path reaproveitado no upsert; cache curto em vez de imutável.
             "Cache-Control": "public, max-age=300",
           },
         });

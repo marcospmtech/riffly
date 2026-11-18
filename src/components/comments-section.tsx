@@ -1,3 +1,4 @@
+// Seção de comentários de uma música: listar, comentar, responder, votar e (staff) apagar/punir.
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
@@ -23,10 +24,7 @@ export function CommentsSection({ songId }: { songId: string }) {
     queryFn: () => listComments({ data: { song_id: songId } }),
   });
 
-  // Votos do usuário atual — carregados à parte (ver comentário em
-  // comments.functions.ts: listComments é pública e não sabe "quem está
-  // vendo"). Mesmo padrão de chamada direta ao Supabase já usado em
-  // use-role.ts, sob a policy "Votes are publicly readable".
+  // Votos do usuário atual, buscados à parte (listComments é pública).
   const commentIds = comments.map((c) => c.id);
   const { data: myVotes } = useQuery({
     queryKey: ["comment-votes", user?.id, commentIds.join(",")],

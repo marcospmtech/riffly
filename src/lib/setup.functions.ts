@@ -1,3 +1,4 @@
+// Cria a conta owner inicial do servidor (só funciona se ainda não existir uma).
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 

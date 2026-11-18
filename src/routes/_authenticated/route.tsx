@@ -1,3 +1,4 @@
+// Layout de /_authenticated: redireciona para /auth se não houver sessão.
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 

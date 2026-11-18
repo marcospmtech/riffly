@@ -1,12 +1,11 @@
+// Audit log: tipos/rótulos de ação, resolveActor, logAudit e listAuditLogs (owner only).
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { z } from "zod";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
 
-// Mesmo guard usado em reports.functions.ts / admin.functions.ts. O projeto
-// duplica esse helper em vez de compartilhar (veja o comentário em
-// reports.functions.ts) — mantive o padrão aqui de propósito.
+// Retorna 403 se o usuário não for owner.
 async function requireOwner(context: {
   supabase: SupabaseClient<Database>;
   userId: string;
@@ -28,13 +27,9 @@ export const AUDIT_ACTIONS = [
   "user_password_reset",
   "admin_created",
   "role_changed",
-  // Usuário redefiniu a própria senha pelo link de "esqueci minha senha"
-  // (diferente de "user_password_reset", que é o owner resetando a senha de
-  // outra pessoa).
+  // Reset feito pelo próprio usuário (diferente de user_password_reset, feito pelo owner).
   "password_self_reset",
-  // Staff (admin/owner) removendo um pedido de música da fila.
   "song_request_deleted",
-  // Moderação de comentários.
   "comment_deleted",
   "user_punished",
   "punishment_updated",
@@ -43,9 +38,7 @@ export const AUDIT_ACTIONS = [
 
 export type AuditAction = (typeof AUDIT_ACTIONS)[number];
 
-// Rótulos em pt-BR usados tanto no filtro da tela quanto na coluna "Ação".
-// Centralizado aqui para o front e o back nunca ficarem com textos diferentes
-// para a mesma ação.
+// Rótulos em pt-BR por ação, usados no filtro e na coluna "Ação".
 export const AUDIT_ACTION_LABELS: Record<AuditAction, string> = {
   song_created: "Música adicionada",
   song_updated: "Música alterada",
@@ -72,10 +65,7 @@ interface LogAuditParams {
   metadata?: Record<string, unknown> | null;
 }
 
-// Busca nome de exibição + e-mail de um usuário a partir do userId, olhando
-// em duas fontes: a tabela `profiles` (display_name) e `auth.users` (e-mail,
-// que não existe em `profiles`). Precisa do client admin porque
-// `auth.admin.getUserById` exige a service_role key.
+// Busca nome + e-mail de um usuário (profiles.display_name + auth.users.email).
 export async function resolveActor(
   supabaseAdmin: SupabaseClient<Database>,
   userId: string,
@@ -91,12 +81,7 @@ export async function resolveActor(
   };
 }
 
-// Grava uma linha de auditoria. Deliberadamente "best effort": se o insert
-// falhar (ex.: bug de schema, tabela fora do ar), a ação principal que
-// chamou isso (deletar usuário, trocar senha, etc.) NÃO deve ser desfeita ou
-// bloqueada por causa disso — só registramos o erro no servidor. Um log de
-// auditoria é observabilidade, não deveria se tornar motivo de a operação em
-// si falhar para o usuário final.
+// Grava uma linha de auditoria. Best effort: erro aqui não desfaz nem bloqueia a ação principal, só loga no servidor.
 export async function logAudit(
   supabaseAdmin: SupabaseClient<Database>,
   params: LogAuditParams,
@@ -130,13 +115,9 @@ export interface AuditLogRow {
 
 const listAuditLogsSchema = z.object({
   year: z.number().int().min(2000).max(3000),
-  // Texto livre: casa com nome/e-mail do ator, nome/detalhe do alvo, e (se
-  // parecer um UUID) o ID do usuário ator.
+  // Casa com nome/e-mail do ator, nome/detalhe do alvo, e (se for UUID) o ID do ator.
   search: z.string().trim().max(200).optional(),
-  // Quando vazio ou omitido, não filtra por ação (mostra tudo).
   actions: z.array(z.enum(AUDIT_ACTIONS)).optional(),
-  // Paginação simples por página, não por cursor — a tela carrega "página a
-  // página" (50 por vez) em vez de trazer o ano inteiro de uma vez.
   page: z.number().int().min(0).default(0),
 });
 
@@ -177,8 +158,7 @@ export const listAuditLogs = createServerFn({ method: "GET" })
 
     const term = data.search?.trim();
     if (term) {
-      // ILIKE usa % e _ como curingas — escapamos para que um nome real com
-      // esses caracteres não vire um padrão de busca acidental.
+      // Escapa % e _ (curingas do ILIKE) para busca literal.
       const escaped = term.replace(/[%_]/g, (m) => `\\${m}`);
       const orParts = [
         `actor_name.ilike.%${escaped}%`,
@@ -186,8 +166,7 @@ export const listAuditLogs = createServerFn({ method: "GET" })
         `target_name.ilike.%${escaped}%`,
         `target_detail.ilike.%${escaped}%`,
       ];
-      // Só adiciona a comparação por ID se o termo parecer mesmo um UUID —
-      // comparar uma coluna uuid com texto arbitrário gera erro no Postgres.
+      // Só adiciona busca por ID se o termo for um UUID válido.
       if (UUID_RE.test(term)) {
         orParts.push(`actor_id.eq.${term}`);
       }

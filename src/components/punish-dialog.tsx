@@ -1,3 +1,4 @@
+// Pop-up de punir usuário: tempo (ou permanente), motivo e print de prova.
 import { useRef, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { X, Upload } from "lucide-react";
@@ -16,8 +17,7 @@ export function PunishDialog({
 }: {
   userId: string;
   commentId?: string;
-  // Só dono pode marcar permanente — quem decide isso é o chamador (que já
-  // sabe o cargo de quem está logado via useRole()), não este componente.
+  // Só dono pode marcar permanente; quem chama este componente já sabe o cargo.
   canSetPermanent: boolean;
   onClose: () => void;
   onDone: () => void;

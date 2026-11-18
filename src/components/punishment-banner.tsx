@@ -1,3 +1,4 @@
+// Faixa fixa no topo avisando que o usuário está impedido de comentar (sem botão de fechar).
 import { useQuery } from "@tanstack/react-query";
 import { AlertTriangle } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
@@ -15,9 +16,7 @@ function formatRemaining(expiresAt: string): string {
   return `${days} dia(s)`;
 }
 
-// Sem botão de fechar, de propósito — o pedido foi explícito: o aviso fica
-// visível o tempo todo enquanto a punição durar. "Não atrapalhar" aqui
-// significa ser uma faixa fina no topo, não um modal bloqueando a tela.
+// Sem botão de fechar, de propósito.
 export function PunishmentBanner() {
   const { isAuthenticated } = useAuth();
 
@@ -25,8 +24,7 @@ export function PunishmentBanner() {
     queryKey: ["my-punishment"],
     queryFn: () => getMyPunishment(),
     enabled: isAuthenticated,
-    // Atualiza sozinho — assim quando o tempo acabar, o aviso some em até um
-    // minuto sem a pessoa precisar recarregar a página.
+    // Atualiza sozinho para sumir quando a punição expirar.
     refetchInterval: 60_000,
   });
 

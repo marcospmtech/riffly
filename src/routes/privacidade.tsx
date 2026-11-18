@@ -1,3 +1,4 @@
+// Página de Política de Privacidade (texto genérico de exemplo).
 import { createFileRoute, Link } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/privacidade")({

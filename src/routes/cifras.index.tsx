@@ -1,3 +1,4 @@
+// Lista/busca do catálogo de cifras, com bloco de pedir música quando a busca não acha nada.
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useSuspenseQuery, queryOptions, useMutation } from "@tanstack/react-query";
 import { listSongs } from "@/lib/songs.functions";

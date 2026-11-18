@@ -1,3 +1,4 @@
+// Página de histórico (músicas vistas recentemente) do usuário logado.
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { Clock } from "lucide-react";

@@ -1,3 +1,4 @@
+// Componente de avatar: getAvatarUrl monta a URL, ProfileAvatar renderiza foto ou silhueta genérica.
 import { User } from "lucide-react";
 
 export function getAvatarUrl(path: string | null | undefined): string | undefined {
@@ -36,9 +37,7 @@ export function ProfileAvatar({
       {src ? (
         <img src={src} alt={alt} className="h-full w-full object-cover" />
       ) : (
-        // Silhueta genérica (pedida no lugar de uma foto real) — o ícone
-        // "User" do lucide já É uma silhueta de cabeça e ombros, então não
-        // precisamos manter um arquivo de imagem só pra isso.
+        // Silhueta genérica (sem foto).
         <User className={`${ICON_SIZES[size]} text-muted-foreground`} />
       )}
     </div>

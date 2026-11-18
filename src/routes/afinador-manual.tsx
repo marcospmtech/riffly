@@ -1,3 +1,4 @@
+// Afinador por corda via microfone: detecta frequência e orienta apertar/soltar a tarraxa.
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Mic, MicOff, RotateCcw } from "lucide-react";

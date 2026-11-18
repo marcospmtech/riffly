@@ -1,9 +1,9 @@
+// Footer do site: marca/redes sociais, links de ferramentas, conta e legal.
 import { Link } from "@tanstack/react-router";
 import { Github, Instagram, Mail } from "lucide-react";
 import logoUrl from "@/assets/riffly-logo.png";
 
-// Separado em arrays pra não duplicar o JSX de cada link — se um dia mudar
-// o estilo do item, muda em um lugar só.
+// Arrays evitam duplicar o JSX de cada link.
 const TOOL_LINKS = [
   { to: "/metronomo", label: "Metrônomo" },
   { to: "/afinador", label: "Afinador" },
@@ -25,8 +25,7 @@ const LEGAL_LINKS = [
 ] as const;
 
 export function Footer() {
-  // Ano calculado em runtime: assim o "© 2026" não fica desatualizado em
-  // janeiro de 2027 só porque ninguém lembrou de trocar um número fixo.
+  // Ano calculado em runtime.
   const year = new Date().getFullYear();
 
   return (

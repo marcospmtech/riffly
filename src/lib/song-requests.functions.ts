@@ -1,3 +1,4 @@
+// Server functions de pedidos de música: criar (usuário), listar e apagar (staff).
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { z } from "zod";
@@ -75,9 +76,7 @@ export const deleteSongRequest = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     await requireStaff(context);
 
-    // .select() no delete captura título/autor do pedido na mesma operação
-    // que apaga a linha (mesmo padrão de deleteSong em songs.functions.ts) —
-    // depois de apagado não existe mais como buscar esses dados separado.
+    // .select() no delete retorna a linha apagada, capturando título/autor para o log.
     const { data: deleted, error } = await context.supabase
       .from("song_requests")
       .delete()

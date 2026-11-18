@@ -1,3 +1,4 @@
+// Modal genérico de confirmação (sim/não), reusado antes de ações destrutivas.
 import { Button } from "@/components/ui/button";
 
 export function ConfirmDialog({

@@ -1,3 +1,4 @@
+// Painel do dono: aba Contas (gerenciar usuários/admins) e aba Punições (punições ativas).
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";

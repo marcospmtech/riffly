@@ -1,3 +1,4 @@
+// Página de destino do link de "esqueci minha senha": define a nova senha.
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -14,11 +15,7 @@ export const Route = createFileRoute("/resetar-senha")({
 
 function ResetPasswordPage() {
   const navigate = useNavigate();
-  // `checking`: ainda não sabemos se existe uma sessão de recuperação válida.
-  // `ready`: existe sessão, pode mostrar o formulário.
-  // Sem esse estado intermediário, a pessoa veria "link inválido" por um
-  // instante mesmo quando o link é válido, só porque o evento do Supabase
-  // ainda não chegou.
+  // checking: ainda não sabemos se há sessão de recuperação válida. ready: há sessão, mostra o formulário.
   const [checking, setChecking] = useState(true);
   const [ready, setReady] = useState(false);
   const [password, setPassword] = useState("");
@@ -26,10 +23,7 @@ function ResetPasswordPage() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    // O link do e-mail de recuperação faz o Supabase ler o token direto da
-    // URL e criar uma sessão temporária automaticamente — isso dispara o
-    // evento PASSWORD_RECOVERY. Também checamos getSession() pro caso de a
-    // sessão já ter sido processada antes deste efeito rodar.
+    // O link de recuperação cria uma sessão temporária (evento PASSWORD_RECOVERY).
     const { data: listener } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === "PASSWORD_RECOVERY" || session) {
         setReady(true);
@@ -55,8 +49,7 @@ function ResetPasswordPage() {
     try {
       await confirmPasswordReset({ data: { password } });
       toast.success("Senha atualizada! Faça login novamente.");
-      // Desloga de propósito: a sessão de recuperação não deveria virar uma
-      // sessão "normal" logada sem a pessoa ter passado pelo login de novo.
+      // Desloga de propósito após trocar a senha.
       await supabase.auth.signOut();
       navigate({ to: "/auth", replace: true });
     } catch (err) {

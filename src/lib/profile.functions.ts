@@ -1,3 +1,4 @@
+// Server functions de perfil: ler perfil público, listar/buscar perfis, editar perfil, enviar/remover avatar.
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { z } from "zod";
@@ -20,12 +21,7 @@ export interface PublicProfile {
   } | null;
 }
 
-// Mesmo client "público" usado em songs.functions.ts — profiles não tem
-// policy de SELECT pública (só "dono vê o próprio"), então pra servir uma
-// página de perfil visitável por qualquer um usamos o supabaseAdmin
-// (service_role), que ignora RLS. O controle de quais campos saem fica
-// inteiramente neste arquivo: nunca selecionamos nada além do que já é
-// pensado pra ser público (nome, bio, avatar, favoritos) — nunca e-mail.
+// Via supabaseAdmin (profiles não tem SELECT público); só retorna os campos pensados pra ser públicos.
 export const getPublicProfile = createServerFn({ method: "GET" })
   .inputValidator((input) => userIdSchema.parse(input))
   .handler(async ({ data }): Promise<PublicProfile> => {
@@ -52,9 +48,7 @@ export interface ProfileListItem {
   avatar_path: string | null;
 }
 
-// Lista usada pela página /usuarios (o "diretório" pra achar outros
-// perfis). Também via supabaseAdmin, pelo mesmo motivo acima — e também só
-// retorna os 3 campos realmente públicos.
+// Lista para a página /usuarios; via supabaseAdmin, só os 3 campos públicos.
 export const listPublicProfiles = createServerFn({ method: "GET" })
   .inputValidator((input) => searchSchema.parse(input ?? {}))
   .handler(async ({ data }): Promise<ProfileListItem[]> => {
@@ -89,11 +83,7 @@ export const updateMyProfile = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input) => updateProfileSchema.parse(input))
   .handler(async ({ data, context }) => {
-    // Autor/álbum favoritos só podem ser valores que existem de fato no
-    // catálogo — o front já só oferece esses valores via listCatalogFacets,
-    // mas validar de novo aqui evita que alguém grave qualquer texto
-    // chamando o server function direto (ex.: pelo devtools), o que
-    // quebraria o "clique e vai para a página do álbum/autor" no perfil.
+    // Valida de novo no servidor que autor/álbum/música existem no catálogo.
     if (data.favorite_author) {
       const { data: match, error } = await context.supabase
         .from("songs")
@@ -149,9 +139,7 @@ const IMAGE_TYPES: Record<string, string> = {
   "image/webp": "webp",
 };
 
-// Limite de 3MB decodificado — uma foto de perfil não precisa (e não
-// deveria) ser maior que isso. Protege contra payloads gigantes sendo
-// carregados inteiros na memória do servidor.
+// Limite de 3MB decodificado para a imagem de avatar.
 const MAX_AVATAR_BYTES = 3 * 1024 * 1024;
 
 const uploadAvatarSchema = z.object({
@@ -170,11 +158,7 @@ export const uploadAvatar = createServerFn({ method: "POST" })
 
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    // Caminho determinístico (sempre o mesmo arquivo por usuário, via
-    // upsert) — diferente do upload de cifras, que gera um UUID novo a
-    // cada envio. Aqui faz sentido: um avatar substitui o anterior, não
-    // acumula. Isso também evita o problema de "arquivo órfão no storage"
-    // que a gente já tinha identificado em deleteSong.
+    // Caminho determinístico por usuário (upsert) — substitui o avatar anterior em vez de acumular.
     const ext = IMAGE_TYPES[data.content_type];
     const path = `${context.userId}.${ext}`;
 
@@ -204,8 +188,7 @@ export const removeAvatar = createServerFn({ method: "POST" })
 
     if (profile?.avatar_path) {
       const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-      // Best effort: se o arquivo já não existir por algum motivo, não
-      // bloqueia a limpeza do campo no perfil.
+      // Best effort: ignora se o arquivo já não existir.
       await supabaseAdmin.storage.from("avatars").remove([profile.avatar_path]);
     }
 

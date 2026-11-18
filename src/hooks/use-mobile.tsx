@@ -1,3 +1,4 @@
+// Hook que detecta viewport mobile (abaixo de 768px).
 import * as React from "react";
 
 const MOBILE_BREAKPOINT = 768;

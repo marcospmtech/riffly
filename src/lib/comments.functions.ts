@@ -1,3 +1,4 @@
+// Server functions de comentários: listar, criar, votar, apagar (staff) e punir usuário (staff).
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { z } from "zod";
@@ -5,8 +6,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
 import { logAudit, resolveActor } from "@/lib/audit.functions";
 
-// Mesmo padrão repetido em cada arquivo (ver comentário em audit.functions.ts
-// sobre isso ser deliberado): retorna o cargo do usuário ou lança 403.
+// Retorna o cargo do usuário ou lança 403.
 async function requireStaffRole(context: {
   supabase: SupabaseClient<Database>;
   userId: string;
@@ -68,9 +68,7 @@ export const listComments = createServerFn({ method: "GET" })
     const userIds = [...new Set(comments.map((c) => c.user_id))];
     const commentIds = comments.map((c) => c.id);
 
-    // Não dá pra fazer um embed automático comments -> profiles: as duas
-    // tabelas referenciam auth.users, mas não têm FK uma com a outra. Por
-    // isso o join é manual aqui, igual já fazemos em profile.functions.ts.
+    // Sem FK entre comments e profiles; join manual.
     const [{ data: profiles }, { data: votes }] = await Promise.all([
       supabaseAdmin.from("profiles").select("user_id, display_name, avatar_path").in("user_id", userIds),
       supabaseAdmin.from("comment_votes").select("comment_id, user_id, vote").in("comment_id", commentIds),
@@ -94,9 +92,7 @@ export const listComments = createServerFn({ method: "GET" })
         },
         likes: commentVotes.filter((v) => v.vote === 1).length,
         dislikes: commentVotes.filter((v) => v.vote === -1).length,
-        // my_vote fica null aqui — essa função é pública (sem auth), então
-        // não sabemos "quem está vendo". O front resolve isso cruzando com
-        // o próprio user.id, que ele já tem via useAuth().
+        // Sem auth nesta função; my_vote é resolvido no front via useAuth().
         my_vote: null,
       };
     });
@@ -150,7 +146,7 @@ export const voteComment = createServerFn({ method: "POST" })
     if (readError) throw readError;
 
     if (existing && existing.vote === data.vote) {
-      // Clicar de novo no mesmo botão remove o voto (toggle off).
+      // Clicar de novo no mesmo botão remove o voto.
       const { error } = await context.supabase.from("comment_votes").delete().eq("id", existing.id);
       if (error) throw error;
       return { vote: null };
@@ -174,9 +170,7 @@ export const deleteComment = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     await requireStaffRole(context);
 
-    // Captura autor + conteúdo ANTES de apagar — depois do delete não tem
-    // mais como buscar isso pra registrar no log (mesmo motivo de
-    // deleteSong/deleteSongRequest).
+    // Captura autor + conteúdo antes de apagar, para o log.
     const { data: deleted, error } = await context.supabase
       .from("comments")
       .delete()
@@ -198,8 +192,7 @@ export const deleteComment = createServerFn({ method: "POST" })
       actorName: actor.name,
       actorEmail: actor.email,
       targetName: author.name ?? author.email,
-      // Trunca pra não inflar o log com comentários longos — é só contexto,
-      // não é o registro primário do conteúdo apagado.
+      // Trunca o conteúdo no log.
       targetDetail: deleted.content.length > 200 ? `${deleted.content.slice(0, 200)}…` : deleted.content,
     });
 
@@ -216,9 +209,7 @@ const MAX_PROOF_BYTES = 5 * 1024 * 1024;
 const punishSchema = z.object({
   user_id: z.string().uuid(),
   comment_id: z.string().uuid().nullable().optional(),
-  // "infinity" ou um número de minutos >= 1. A checagem de que só o dono
-  // pode mandar "infinity" acontece dentro do handler, depois de sabermos
-  // o cargo de quem está chamando.
+  // "infinity" ou minutos >= 1; só dono pode usar "infinity" (checado no handler).
   duration: z.union([z.literal("infinity"), z.number().int().min(1)]),
   reason: z.string().trim().min(1).max(500),
   proof_content_type: z.enum(["image/png", "image/jpeg", "image/webp"]).nullable().optional(),
@@ -254,9 +245,7 @@ export const punishUser = createServerFn({ method: "POST" })
     const expiresAt =
       data.duration === "infinity" ? null : new Date(Date.now() + data.duration * 60_000).toISOString();
 
-    // Uma pessoa só tem uma punição "ativa" por vez — punir de novo substitui
-    // a anterior em vez de empilhar várias linhas pro mesmo usuário (o que
-    // faria a tela de punições ativas mostrar duplicado).
+    // Substitui qualquer punição ativa anterior do usuário (uma por vez).
     const { error: deleteOldError } = await supabaseAdmin
       .from("punishments")
       .delete()

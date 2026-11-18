@@ -15,7 +15,12 @@
 - **Admin panel** — staff can create, edit, and delete songs (title, author, album, BPM, tuning, cover image, chord sheet image), and manage user-submitted song requests.
 - **Owner panel** — a single owner account manages every user: promote/demote roles (`owner` > `admin` > `user`), reset passwords, and delete accounts.
 - **Reports** (owner only) — a bar chart of songs added vs. songs favorited per month, for years 2026–2030 (years with no data yet just render an empty chart). Reports can be saved as a permanent snapshot (so the numbers stay even if the underlying songs/favorites are later deleted) and printed directly from the page.
-- **Audit log** (owner only) — a searchable, filterable history of administrative actions, grouped by year inside the Reports page: songs added, edited, or removed; passwords reset; accounts deleted; admins created; and roles changed (showing the previous and new role). Each entry shows who performed the action, what it was done to, and when. Search matches by user name, target name, e-mail, or user ID; a dropdown filter narrows the list down to specific action types.
+- **Audit log** (owner only) — a searchable, filterable history of administrative actions, grouped by year inside the Reports page: songs added, edited, or removed; passwords reset; accounts deleted; admins created; roles changed (showing the previous and new role); song requests removed; comments removed; and users punished. Each entry shows who performed the action, what it was done to, and when. Search matches by user name, target name, e-mail, or user ID; a dropdown filter narrows the list down to specific action types.
+- **User profiles** — every account has a public profile page (`/perfil/:id`, reachable by clicking the avatar next to "Sair" in the header, or from the `/usuarios` directory) with a name, a short bio, a profile photo, and three clickable favorites (song, artist/band, and album) picked from the existing catalog — clicking one jumps to that song's page or filters the chord-sheet library by that artist/album. Nothing is asked at sign-up; filling in a profile is entirely opt-in.
+- **Self-service password reset** — a "Forgot password" link on the sign-in screen sends a recovery e-mail (via Supabase Auth); the user sets a new password on a dedicated page without needing an admin.
+- **Comments** — signed-in users can comment on a song's chord-sheet page, like/dislike comments, and reply one level deep. Staff (admin/owner) can delete any comment (with a confirmation prompt) or punish the commenter (temporary or, owner-only, permanent) directly from a comment, attaching a reason and an optional screenshot as proof.
+- **Moderation / punishments** (owner only) — a "Punishments" tab inside the owner panel lists every currently-active punishment (who applied it, who it targets, and when it expires), with a details popup to see the full reason, the proof screenshot, change the duration (including switching to/from permanent), or lift the punishment entirely. A punished user sees a persistent, non-dismissible banner stating they're currently blocked from commenting and for how long; the punishment only blocks commenting, nothing else on the site.
+- **Footer & legal pages** — every page has a footer with quick links, social links, and placeholder Terms of Use / Privacy Policy pages (generic text, clearly not legally reviewed — meant as a starting point, not a final document).
 - **Auth** — email/password and Google sign-in, backed by Supabase Auth.
 
 ## Screenshots
@@ -47,6 +52,18 @@
 | Reports | Audit logs |
 |---|---|
 | ![Monthly reports](public/img/report.png) | ![Audit logs](public/img/logs.png) |
+
+| Active punishments |
+|---|
+| ![Active punishments panel](public/img/punishment.png) |
+
+| Profile | Comments |
+|---|---|
+| ![Public profile page](public/img/profile.png) | ![Comments on a chord sheet](public/img/comment.png) |
+
+| Footer |
+|---|
+| ![Site footer](public/img/footer.png) |
 
 ## Tech stack
 
@@ -97,11 +114,13 @@ ACRCLOUD_ACCESS_SECRET=
 
 ### Database
 
-Run the SQL migrations in `supabase/migrations/` against your Supabase project (via the SQL Editor or the Supabase CLI), then create a `chord-images` storage bucket (public read access) for chord sheet and cover images.
+Run the SQL migrations in `supabase/migrations/` against your Supabase project (via the SQL Editor or the Supabase CLI). The `avatars` and `comment-proofs` storage buckets are created automatically by the migrations themselves; the `chord-images` bucket (public read access) still needs to be created manually, since it predates the migration history.
 
 ### Google sign-in (optional)
 
 Configure a Google OAuth client in [Google Cloud Console](https://console.cloud.google.com) and add the Client ID/Secret under **Authentication → Providers → Google** in your Supabase project. No `.env` changes are needed for this — Supabase handles the OAuth flow itself.
+
+For the "forgot password" flow to work, add your site's `/resetar-senha` URL (e.g. `https://riffly.app.br/resetar-senha`, plus your local dev URL if needed) under **Authentication → URL Configuration → Redirect URLs**.
 
 ### Run locally
 

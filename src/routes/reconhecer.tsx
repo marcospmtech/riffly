@@ -1,3 +1,4 @@
+// Grava áudio do microfone e identifica a música via ACRCloud (recognizeSong).
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useRef, useState, useEffect } from "react";
 import { Mic, Loader2, Music2, ExternalLink, Guitar } from "lucide-react";

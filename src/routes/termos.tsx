@@ -1,3 +1,4 @@
+// Página de Termos de Uso (texto genérico de exemplo).
 import { createFileRoute, Link } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/termos")({

@@ -1,3 +1,4 @@
+// Server functions do catálogo de músicas: listar, buscar, criar, editar e apagar, mais facetas de autor/álbum.
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { z } from "zod";
@@ -19,8 +20,7 @@ const songSchema = z.object({
 const songIdSchema = z.object({ id: z.string().uuid() });
 
 function normalizeSongInput(data: z.infer<typeof songSchema>) {
-  // A ordem do array é a ordem em que as imagens são exibidas.
-  // `image_path` continua sendo gravado com a 1ª imagem, por compatibilidade.
+  // Monta image_paths a partir de image_path se necessário; grava a 1ª imagem em image_path por compatibilidade.
   const imagePaths =
     data.image_paths ?? (data.image_path ? [data.image_path] : []);
   return {
@@ -65,11 +65,7 @@ export interface CatalogFacets {
   albums: string[];
 }
 
-// Usado pelos seletores de "autor/banda favorita" e "álbum favorito" do
-// perfil. Não existe tabela separada de banda/álbum no catálogo — authors e
-// albums são só os valores distintos das colunas songs.author/songs.album.
-// Como listSongs() já traz a tabela inteira sem paginação, deduplicar em JS
-// aqui é consistente com o resto do arquivo.
+// authors/albums = valores distintos de songs.author/songs.album (não há tabela separada de banda/álbum).
 export const listCatalogFacets = createServerFn({ method: "GET" }).handler(
   async (): Promise<CatalogFacets> => {
     const supabasePublic = await createPublicClient();
@@ -115,9 +111,7 @@ export const createSong = createServerFn({ method: "POST" })
     const { data: song, error } = await context.supabase.from("songs").insert(payload).select().single();
     if (error) throw error;
 
-    // Log "best effort": usa supabaseAdmin porque resolveActor precisa da
-    // service_role para ler o e-mail em auth.users (context.supabase só tem
-    // a permissão do próprio usuário logado).
+    // Usa supabaseAdmin: resolveActor precisa de service_role para ler o e-mail em auth.users.
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const actor = await resolveActor(supabaseAdmin, context.userId);
     await logAudit(supabaseAdmin, {
@@ -177,10 +171,7 @@ export const deleteSong = createServerFn({ method: "POST" })
     if (roleError) throw roleError;
     if (!roleData || roleData.length === 0) throw new Response("Forbidden", { status: 403 });
 
-    // .select() num delete faz o PostgREST retornar a linha que acabou de
-    // ser apagada — assim capturamos título/autor DEPOIS que o delete já
-    // aconteceu, sem precisar de um SELECT separado antes (que teria uma
-    // janela de corrida entre ler e apagar).
+    // .select() no delete retorna a linha apagada, capturando título/autor sem um SELECT separado antes.
     const { data: deleted, error } = await context.supabase
       .from("songs")
       .delete()

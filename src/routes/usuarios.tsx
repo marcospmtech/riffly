@@ -1,3 +1,4 @@
+// Página de diretório de usuários: busca por nome, linkando para cada perfil público.
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
@@ -18,9 +19,7 @@ export const Route = createFileRoute("/usuarios")({
 function UsuariosPage() {
   const [search, setSearch] = useState("");
 
-  // Busca no servidor (não filtro client-side): diferente do catálogo de
-  // músicas, a lista de perfis pode crescer bem mais, e não tem sentido
-  // trazer todo mundo pra filtrar no navegador só pra achar uma pessoa.
+  // Busca no servidor (a lista pode crescer bem mais que o catálogo de músicas).
   const { data: profiles = [], isFetching } = useQuery({
     queryKey: ["public-profiles", search],
     queryFn: () => listPublicProfiles({ data: { search: search.trim() || undefined } }),

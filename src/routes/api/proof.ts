@@ -1,3 +1,4 @@
+// Rota que serve as prints de prova do bucket `comment-proofs`.
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/api/proof")({

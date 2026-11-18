@@ -1,3 +1,4 @@
+// Modal genérico de seleção com busca, reusado nos seletores de música/autor/álbum favoritos.
 import { useState } from "react";
 import { Search, X } from "lucide-react";
 import { Button } from "@/components/ui/button";

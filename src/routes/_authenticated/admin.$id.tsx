@@ -1,3 +1,4 @@
+// Página de edição de uma música específica (staff).
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_authenticated/admin/$id")({
