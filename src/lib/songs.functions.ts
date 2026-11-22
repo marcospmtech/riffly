@@ -34,7 +34,7 @@ function normalizeSongInput(data: z.infer<typeof songSchema>) {
   };
 }
 
-async function createPublicClient() {
+export async function createPublicClient() {
   const { createClient } = await import("@supabase/supabase-js");
   type Database = import("@/integrations/supabase/types").Database;
   const key = process.env["SUPABASE_PUBLISHABLE_KEY"]!;

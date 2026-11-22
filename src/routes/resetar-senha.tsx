@@ -18,12 +18,42 @@ function ResetPasswordPage() {
   // checking: ainda não sabemos se há sessão de recuperação válida. ready: há sessão, mostra o formulário.
   const [checking, setChecking] = useState(true);
   const [ready, setReady] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    // O link de recuperação cria uma sessão temporária (evento PASSWORD_RECOVERY).
+    // Fluxo atual do Supabase: o link do e-mail traz ?token_hash=...&type=recovery
+    // na URL (em vez de uma sessão já pronta no fragmento #). Precisamos
+    // trocar esse token pela sessão de recuperação manualmente.
+    const params = new URLSearchParams(window.location.search);
+    const tokenHash = params.get("token_hash");
+    const type = params.get("type");
+    const errorDescription = params.get("error_description");
+
+    if (errorDescription) {
+      setError(decodeURIComponent(errorDescription.replace(/\+/g, " ")));
+      setChecking(false);
+      return;
+    }
+
+    if (tokenHash && type === "recovery") {
+      supabase.auth.verifyOtp({ type: "recovery", token_hash: tokenHash }).then(({ error: verifyError }) => {
+        if (verifyError) {
+          setError(verifyError.message);
+        } else {
+          setReady(true);
+          // Limpa o token da URL depois de usado — ele não serve mais e não
+          // deveria ficar visível/reutilizável na barra de endereço.
+          window.history.replaceState({}, "", "/resetar-senha");
+        }
+        setChecking(false);
+      });
+      return;
+    }
+
+    // Fallback: fluxo antigo, sessão já vem pronta via hash (PASSWORD_RECOVERY).
     const { data: listener } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === "PASSWORD_RECOVERY" || session) {
         setReady(true);
@@ -48,10 +78,8 @@ function ResetPasswordPage() {
     setLoading(true);
     try {
       await confirmPasswordReset({ data: { password } });
-      toast.success("Senha atualizada! Faça login novamente.");
-      // Desloga de propósito após trocar a senha.
-      await supabase.auth.signOut();
-      navigate({ to: "/auth", replace: true });
+      toast.success("Senha atualizada! Você já está logado(a).");
+      navigate({ to: "/", replace: true });
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Erro ao atualizar a senha");
     } finally {
@@ -71,7 +99,7 @@ function ResetPasswordPage() {
     return (
       <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center px-4 text-center">
         <p className="text-sm text-muted-foreground">
-          Link inválido ou expirado. Solicite um novo link de recuperação na tela de login.
+          {error ?? "Link inválido ou expirado. Solicite um novo link de recuperação na tela de login."}
         </p>
       </div>
     );

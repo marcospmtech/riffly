@@ -50,6 +50,18 @@ export type Database = {
         }
         Relationships: []
       }
+      author_photos: {
+        Row: { name: string; image_path: string; created_at: string }
+        Insert: { name: string; image_path: string; created_at?: string }
+        Update: { name?: string; image_path?: string; created_at?: string }
+        Relationships: []
+      }
+      album_photos: {
+        Row: { name: string; image_path: string; created_at: string }
+        Insert: { name: string; image_path: string; created_at?: string }
+        Update: { name?: string; image_path?: string; created_at?: string }
+        Relationships: []
+      }
       comments: {
         Row: {
           content: string

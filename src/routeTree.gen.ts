@@ -27,6 +27,7 @@ import { Route as AuthenticatedFavoritosRouteImport } from './routes/_authentica
 import { Route as AuthenticatedRecentesRouteImport } from './routes/_authenticated/recentes'
 import { Route as AuthenticatedRelatoriosRouteImport } from './routes/_authenticated/relatorios'
 import { Route as ApiAvatarRouteImport } from './routes/api/avatar'
+import { Route as ApiCatalogPhotoRouteImport } from './routes/api/catalog-photo'
 import { Route as ApiImgRouteImport } from './routes/api/img'
 import { Route as ApiProofRouteImport } from './routes/api/proof'
 import { Route as CifrasIndexRouteImport } from './routes/cifras.index'
@@ -124,6 +125,11 @@ const ApiAvatarRoute = ApiAvatarRouteImport.update({
   path: '/api/avatar',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiCatalogPhotoRoute = ApiCatalogPhotoRouteImport.update({
+  id: '/api/catalog-photo',
+  path: '/api/catalog-photo',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiImgRoute = ApiImgRouteImport.update({
   id: '/api/img',
   path: '/api/img',
@@ -178,6 +184,7 @@ export interface FileRoutesByFullPath {
   '/recentes': typeof AuthenticatedRecentesRoute
   '/relatorios': typeof AuthenticatedRelatoriosRoute
   '/api/avatar': typeof ApiAvatarRoute
+  '/api/catalog-photo': typeof ApiCatalogPhotoRoute
   '/api/img': typeof ApiImgRoute
   '/api/proof': typeof ApiProofRoute
   '/cifras/$id': typeof CifrasIdRoute
@@ -203,6 +210,7 @@ export interface FileRoutesByTo {
   '/recentes': typeof AuthenticatedRecentesRoute
   '/relatorios': typeof AuthenticatedRelatoriosRoute
   '/api/avatar': typeof ApiAvatarRoute
+  '/api/catalog-photo': typeof ApiCatalogPhotoRoute
   '/api/img': typeof ApiImgRoute
   '/api/proof': typeof ApiProofRoute
   '/cifras/$id': typeof CifrasIdRoute
@@ -231,6 +239,7 @@ export interface FileRoutesById {
   '/_authenticated/recentes': typeof AuthenticatedRecentesRoute
   '/_authenticated/relatorios': typeof AuthenticatedRelatoriosRoute
   '/api/avatar': typeof ApiAvatarRoute
+  '/api/catalog-photo': typeof ApiCatalogPhotoRoute
   '/api/img': typeof ApiImgRoute
   '/api/proof': typeof ApiProofRoute
   '/cifras/$id': typeof CifrasIdRoute
@@ -259,6 +268,7 @@ export interface FileRouteTypes {
     | '/recentes'
     | '/relatorios'
     | '/api/avatar'
+    | '/api/catalog-photo'
     | '/api/img'
     | '/api/proof'
     | '/cifras/$id'
@@ -284,6 +294,7 @@ export interface FileRouteTypes {
     | '/recentes'
     | '/relatorios'
     | '/api/avatar'
+    | '/api/catalog-photo'
     | '/api/img'
     | '/api/proof'
     | '/cifras/$id'
@@ -311,6 +322,7 @@ export interface FileRouteTypes {
     | '/_authenticated/recentes'
     | '/_authenticated/relatorios'
     | '/api/avatar'
+    | '/api/catalog-photo'
     | '/api/img'
     | '/api/proof'
     | '/cifras/$id'
@@ -334,6 +346,7 @@ export interface RootRouteChildren {
   TermosRoute: typeof TermosRoute
   UsuariosRoute: typeof UsuariosRoute
   ApiAvatarRoute: typeof ApiAvatarRoute
+  ApiCatalogPhotoRoute: typeof ApiCatalogPhotoRoute
   ApiImgRoute: typeof ApiImgRoute
   ApiProofRoute: typeof ApiProofRoute
   PerfilIdRoute: typeof PerfilIdRoute
@@ -468,6 +481,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAvatarRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/catalog-photo': {
+      id: '/api/catalog-photo'
+      path: '/api/catalog-photo'
+      fullPath: '/api/catalog-photo'
+      preLoaderRoute: typeof ApiCatalogPhotoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/img': {
       id: '/api/img'
       path: '/api/img'
@@ -577,6 +597,7 @@ const rootRouteChildren: RootRouteChildren = {
   TermosRoute: TermosRoute,
   UsuariosRoute: UsuariosRoute,
   ApiAvatarRoute: ApiAvatarRoute,
+  ApiCatalogPhotoRoute: ApiCatalogPhotoRoute,
   ApiImgRoute: ApiImgRoute,
   ApiProofRoute: ApiProofRoute,
   PerfilIdRoute: PerfilIdRoute,

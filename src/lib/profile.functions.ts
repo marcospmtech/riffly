@@ -11,7 +11,9 @@ export interface PublicProfile {
   bio: string | null;
   avatar_path: string | null;
   favorite_author: string | null;
+  favorite_author_image: string | null;
   favorite_album: string | null;
+  favorite_album_image: string | null;
   favorite_song: {
     id: string;
     title: string;
@@ -37,7 +39,21 @@ export const getPublicProfile = createServerFn({ method: "GET" })
     if (error) throw error;
     if (!profile) throw new Response("Perfil não encontrado", { status: 404 });
 
-    return profile as unknown as PublicProfile;
+    // Busca a foto do autor/álbum favorito pelo nome, se houver.
+    const [authorPhoto, albumPhoto] = await Promise.all([
+      profile.favorite_author
+        ? supabaseAdmin.from("author_photos").select("image_path").eq("name", profile.favorite_author).maybeSingle()
+        : Promise.resolve({ data: null }),
+      profile.favorite_album
+        ? supabaseAdmin.from("album_photos").select("image_path").eq("name", profile.favorite_album).maybeSingle()
+        : Promise.resolve({ data: null }),
+    ]);
+
+    return {
+      ...profile,
+      favorite_author_image: authorPhoto.data?.image_path ?? null,
+      favorite_album_image: albumPhoto.data?.image_path ?? null,
+    } as unknown as PublicProfile;
   });
 
 const searchSchema = z.object({ search: z.string().trim().max(100).optional() });

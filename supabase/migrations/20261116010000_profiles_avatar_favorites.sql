@@ -1,11 +1,5 @@
--- Perfil completo: bio, foto de avatar e três "favoritos" (música, autor/banda
--- e álbum) que aparecem na página pública de perfil.
---
--- favorite_author e favorite_album são TEXT livre (não FK) de propósito: o
--- catálogo não tem tabelas separadas de "banda" ou "álbum", só os campos
--- songs.author / songs.album. A validação de que o valor escolhido existe
--- de fato no catálogo é feita em profile.functions.ts (updateMyProfile),
--- não aqui no banco.
+-- Perfil completo: bio, foto de avatar e três "favoritos" (música, autor/banda e álbum) que aparecem na página pública de perfil.
+
 alter table public.profiles
   add column if not exists bio text,
   add column if not exists avatar_path text,

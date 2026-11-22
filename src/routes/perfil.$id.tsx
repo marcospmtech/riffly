@@ -8,6 +8,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { ProfileAvatar } from "@/components/avatar";
 import { EditProfileDialog } from "@/components/edit-profile-dialog";
 import { getSongImage } from "@/components/song-card";
+import { getCatalogPhotoUrl } from "@/components/catalog-photo";
 import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/perfil/$id")({
@@ -74,6 +75,7 @@ function ProfilePage() {
                 icon={Guitar}
                 kicker="Autor/banda favorita"
                 title={profile.favorite_author}
+                image={getCatalogPhotoUrl(profile.favorite_author_image)}
                 onClick={() => navigate({ to: "/cifras", search: { q: profile.favorite_author! } })}
               />
             )}
@@ -82,6 +84,7 @@ function ProfilePage() {
                 icon={Disc3}
                 kicker="Álbum favorito"
                 title={profile.favorite_album}
+                image={getCatalogPhotoUrl(profile.favorite_album_image)}
                 onClick={() => navigate({ to: "/cifras", search: { q: profile.favorite_album! } })}
               />
             )}
