@@ -86,6 +86,15 @@ const upsertPhotoSchema = z.object({
   data_base64: z.string().min(1),
 });
 
+async function hashName(name: string): Promise<string> {
+  // Nome vira um hash hex em vez de ir direto no caminho do arquivo: o Storage
+  // do Supabase rejeita vários caracteres (aspas, parênteses, etc.) comuns em
+  // nome de banda/álbum (ex.: "Lynyrd Skynyrd" com apelido entre aspas), e
+  // um hash é seguro independente do que o nome contenha.
+  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(name));
+  return [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, "0")).join("").slice(0, 32);
+}
+
 async function upsertPhoto(table: "author_photos" | "album_photos", data: z.infer<typeof upsertPhotoSchema>) {
   const buffer = Uint8Array.from(atob(data.data_base64), (c) => c.charCodeAt(0));
   if (buffer.byteLength > MAX_PHOTO_BYTES) {
@@ -95,7 +104,7 @@ async function upsertPhoto(table: "author_photos" | "album_photos", data: z.infe
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   const ext = IMAGE_TYPES[data.content_type];
   // Caminho determinístico por nome (upsert) — substitui a foto anterior em vez de acumular lixo no bucket.
-  const path = `${table}/${encodeURIComponent(data.name)}.${ext}`;
+  const path = `${table}/${await hashName(data.name)}.${ext}`;
 
   const { error: uploadError } = await supabaseAdmin.storage
     .from("catalog-photos")

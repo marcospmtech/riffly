@@ -12,7 +12,7 @@
 - **Chord sheets** — each song has a chord sheet image, an embedded YouTube player, and one-tap shortcuts: jump to the metronome with the song's BPM already set, or to the manual tuner with the song's tuning pre-selected.
 - **Song recognition** — listen through the microphone and identify what's currently playing via ACRCloud, then jump straight to its YouTube video, Spotify link, and (if it's already in the library) its chord sheet.
 - **Favorites & recents** — signed-in users get quick access to the songs they use most.
-- **Admin panel** — staff can create, edit, and delete songs (title, author, album, BPM, tuning, cover image, chord sheet image), and manage user-submitted song requests.
+- **Admin panel** — staff can create, edit, and delete songs (title, author, album, BPM, tuning, cover image, chord sheet image), manage user-submitted song requests, and (under a separate "Authors/Albums" tab) upload a photo for each distinct artist/band or album in the catalog, searchable and sorted with no-photo entries first, color-coded yellow (no photo yet) / purple (has photo). These photos are what shows up on a user's profile when they pick that artist or album as a favorite.
 - **Owner panel** — a single owner account manages every user: promote/demote roles (`owner` > `admin` > `user`), reset passwords, and delete accounts.
 - **Reports** (owner only) — a bar chart of songs added vs. songs favorited per month, for years 2026–2030 (years with no data yet just render an empty chart). Reports can be saved as a permanent snapshot (so the numbers stay even if the underlying songs/favorites are later deleted) and printed directly from the page.
 - **Audit log** (owner only) — a searchable, filterable history of administrative actions, grouped by year inside the Reports page: songs added, edited, or removed; passwords reset; accounts deleted; admins created; roles changed (showing the previous and new role); song requests removed; comments removed; and users punished. Each entry shows who performed the action, what it was done to, and when. Search matches by user name, target name, e-mail, or user ID; a dropdown filter narrows the list down to specific action types.
@@ -44,6 +44,10 @@
 | Admin panel | Add chord sheet |
 |---|---|
 | ![Admin panel](public/img/admin.png) | ![Add chord sheet](public/img/add_cifra.png) |
+
+| Authors/Albums photos |
+|---|
+| ![Authors and albums photo manager](public/img/autor_album.png) |
 
 | Owner panel | Add admin |
 |---|---|
@@ -114,7 +118,7 @@ ACRCLOUD_ACCESS_SECRET=
 
 ### Database
 
-Run the SQL migrations in `supabase/migrations/` against your Supabase project (via the SQL Editor or the Supabase CLI). The `avatars` and `comment-proofs` storage buckets are created automatically by the migrations themselves; the `chord-images` bucket (public read access) still needs to be created manually, since it predates the migration history.
+Run the SQL migrations in `supabase/migrations/` against your Supabase project (via the SQL Editor or the Supabase CLI). The `avatars`, `comment-proofs`, and `catalog-photos` storage buckets are created automatically by the migrations themselves; the `chord-images` bucket (public read access) still needs to be created manually, since it predates the migration history.
 
 ### Google sign-in (optional)
 
